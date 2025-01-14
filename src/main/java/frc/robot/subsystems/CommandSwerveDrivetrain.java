@@ -34,8 +34,7 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
-    public LegacySwerveDriveState state = new LegacySwerveDriveState();
-    public Pose2d pose = state.Pose;
+
 
 
     public CommandSwerveDrivetrain(LegacySwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, LegacySwerveModuleConstants... modules) {
@@ -85,5 +84,6 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
                 hasAppliedOperatorPerspective = true;
             });
         }
+        
     }
 }

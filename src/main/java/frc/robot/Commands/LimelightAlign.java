@@ -38,9 +38,9 @@ public class LimelightAlign extends Command {
   LimelightHelpers.LimelightResults result;
   private final Pose2d poseProvider;//current estimated pose
 
-  private final ProfiledPIDController xController = new ProfiledPIDController(0, 0, 0, X_CONSTRAINTS);
-  private final ProfiledPIDController yController = new ProfiledPIDController(0, 0, 0, Y_CONSTRAINTS);
-  private final ProfiledPIDController omegaController = new ProfiledPIDController(0, 0, 0, OMEGA_CONSTRAINTS);
+  private final ProfiledPIDController xController = new ProfiledPIDController(3, 0, 0, X_CONSTRAINTS);
+  private final ProfiledPIDController yController = new ProfiledPIDController(3, 0, 0, Y_CONSTRAINTS);
+  private final ProfiledPIDController omegaController = new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
   /** Creates a new LimelightAlign. (constructor) */
   public LimelightAlign(LimeLightSubsystem limelight, CommandSwerveDrivetrain drivetrain, FieldCentric drive) {
@@ -48,7 +48,8 @@ public class LimelightAlign extends Command {
     this.limelight = limelight;
     this.drivetrain = drivetrain;
     this.drive = drive;
-    poseProvider = drivetrain.pose;
+    poseProvider = new Pose2d(); //to make not null
+
     //set where it can stop trying to line up
     xController.setTolerance(0.2);
     yController.setTolerance(0.2);
@@ -106,8 +107,30 @@ public class LimelightAlign extends Command {
     }
 
     /* condition if no tag/tag ambiguous here if needed */
+    else{
+      var xSpeed = xController.calculate(robotPose.getX());
+      if (xController.atGoal()){
+        //stop
+        xSpeed = 0;
+      }
+
+      var ySpeed =  yController.calculate(robotPose.getY());
+      if (yController.atGoal()){
+        ySpeed=0;
+      }
+
+      var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
+      if (omegaController.atGoal()){
+        omegaSpeed=0;
+      }
 
 
+    }
+    drivetrain.applyRequest(() -> drive.withVelocityX(ySpeed) // Drive forward with
+                                                                                                                                                                                                // negative Y (forward)
+            .withVelocityY(xSpeed)  // Drive left with negative X (left)
+            .withRotationalRate(omegaSpeed) // Drive counterclockwise with negative X (left)
+        );
   }
 
   // Called once the command ends or is interrupted.
@@ -120,7 +143,7 @@ public class LimelightAlign extends Command {
         );
   }
 
-  // Returns true when the command should end.
+  // Returns true when the command should end... optional
   @Override
   public boolean isFinished() {
     return false;
