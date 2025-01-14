@@ -42,10 +42,11 @@ public class LimeLightSubsystem extends SubsystemBase {
 
     SmartDashboard.putBoolean("Use Limelight", trust); //always show if limelight in use
   
+    //constantly check robot position
     if (enable) 
     {
       
-      Double targetDistance = LimelightHelpers.getTargetPose3d_CameraSpace(ll).getTranslation().getDistance(new Translation3d());
+      Double targetDistance = LimelightHelpers.getTargetPose3d_CameraSpace(ll).getTranslation().getDistance(new Translation3d());// where is the tag seen now?
       Double confidence = 1 - ((targetDistance - 1) / 6);// how much do we trust limelight measurement (think jitter)
       LimelightHelpers.LimelightResults result = LimelightHelpers.getLatestResults(ll);
       if (result.valid) 
