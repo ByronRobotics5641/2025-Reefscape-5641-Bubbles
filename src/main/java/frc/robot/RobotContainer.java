@@ -48,16 +48,19 @@ public class RobotContainer {
 
   /********Commands not included with Swerve Builder******/
   public final Command limelightAlign = new LimelightAlign(limelight, drivetrain, drive);
-
+  
 
 
   private void configureBindings() {
+    
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
             .withVelocityY(0.2 * Math.pow((joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
             .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(2) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
         ));
+
+
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain

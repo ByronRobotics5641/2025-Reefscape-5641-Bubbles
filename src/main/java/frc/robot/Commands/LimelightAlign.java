@@ -12,9 +12,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
@@ -35,6 +37,8 @@ public class LimelightAlign extends Command {
   CommandSwerveDrivetrain drivetrain;
   FieldCentric drive;
 
+  
+
   LimelightHelpers.LimelightResults result;
   private final Pose2d poseProvider;//current estimated pose
 
@@ -42,13 +46,14 @@ public class LimelightAlign extends Command {
   private final ProfiledPIDController yController = new ProfiledPIDController(3, 0, 0, Y_CONSTRAINTS);
   private final ProfiledPIDController omegaController = new ProfiledPIDController(2, 0, 0, OMEGA_CONSTRAINTS);
 
+  
   /** Creates a new LimelightAlign. (constructor) */
   public LimelightAlign(LimeLightSubsystem limelight, CommandSwerveDrivetrain drivetrain, FieldCentric drive) {
     //Receive the drive subsystem parts and hold them within the class. These are copies of the drive subsystem parts and the limelight
     this.limelight = limelight;
     this.drivetrain = drivetrain;
     this.drive = drive;
-    poseProvider = new Pose2d(); //to make not null
+    poseProvider = drivetrain.getState().Pose; //supply pose 
 
     //set where it can stop trying to line up
     xController.setTolerance(0.2);
@@ -69,7 +74,7 @@ public class LimelightAlign extends Command {
   public void initialize() {
 
     //set command starting position
-    var robotPose = poseProvider;
+    var robotPose = drivetrain.getState().Pose;
     omegaController.reset(robotPose.getRotation().getRadians());
     xController.reset(robotPose.getX());
     yController.reset(robotPose.getY());
@@ -78,7 +83,7 @@ public class LimelightAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+
     //poll the current position
     var robotPose2d = poseProvider;
     var robotPose =
@@ -100,14 +105,42 @@ public class LimelightAlign extends Command {
 
       var goalPose = camTarget.transformBy(TAG_TO_GOAL).toPose2d();
 
-      //Drive using PID calculations
+      //Drive using these PID calculations
       xController.setGoal(goalPose.getX());
       yController.setGoal(goalPose.getY());
       omegaController.setGoal(goalPose.getRotation().getRadians());
+
+      //set speed for side to side
+      var xSpeed = xController.calculate(robotPose.getX());
+      if (xController.atGoal()){
+        //stop
+        xSpeed = 0;
+      }
+
+      //set speed for forward/backward
+      var ySpeed =  yController.calculate(robotPose.getY());
+      if (yController.atGoal()){
+        ySpeed=0;
+      }
+
+      //setrotation speed
+      var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
+      if (omegaController.atGoal()){
+        omegaSpeed=0;
+      }
+
+      //post speeds to drivetrain
+      drivetrain.setControl(
+        drive.withVelocityX(ySpeed)
+           .withVelocityY(xSpeed)
+           .withRotationalRate(omegaSpeed)
+     );
     }
 
     /* condition if no tag/tag ambiguous here if needed */
+
     else{
+      //this is the same for now
       var xSpeed = xController.calculate(robotPose.getX());
       if (xController.atGoal()){
         //stop
@@ -124,24 +157,23 @@ public class LimelightAlign extends Command {
         omegaSpeed=0;
       }
 
-
+      drivetrain.setControl(
+        drive.withVelocityX(ySpeed)
+           .withVelocityY(xSpeed)
+           .withRotationalRate(omegaSpeed)
+     );
     }
-    drivetrain.applyRequest(() -> drive.withVelocityX(ySpeed) // Drive forward with
-                                                                                                                                                                                                // negative Y (forward)
-            .withVelocityY(xSpeed)  // Drive left with negative X (left)
-            .withRotationalRate(omegaSpeed) // Drive counterclockwise with negative X (left)
-        );
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.applyRequest(() -> drive.withVelocityX(0) // Drive forward with
-                                                                                                                                                                                                // negative Y (forward)
-            .withVelocityY(0)  // Drive left with negative X (left)
-            .withRotationalRate(0) // Drive counterclockwise with negative X (left)
-        );
-  }
+    drivetrain.setControl(
+      drive.withVelocityX(0)
+         .withVelocityY(0)
+         .withRotationalRate(0)
+   );  }
 
   // Returns true when the command should end... optional
   @Override
