@@ -31,11 +31,12 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
   
   /*******Set up drive********/
-  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
   private final LegacySwerveRequest.FieldCentric drive = new LegacySwerveRequest.FieldCentric()
       .withDeadband(Constants.MaxSpeed * 0.2).withRotationalDeadband(Constants.MaxAngularRate * 0.3) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
+
   private final LegacySwerveRequest.SwerveDriveBrake brake = new LegacySwerveRequest.SwerveDriveBrake();
   private final LegacySwerveRequest.PointWheelsAt point = new LegacySwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(Constants.MaxSpeed);
@@ -54,10 +55,10 @@ public class RobotContainer {
   private void configureBindings() {
     
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
-            .withVelocityY(0.2 * Math.pow((joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
-            .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(2) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
+            .withVelocityY(0.2 * Math.pow((-joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
+            .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(4) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
         ));
 
 
