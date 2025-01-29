@@ -107,8 +107,6 @@ public class LimelightAlign extends Command {
         new Rotation3d(0.0,0.0,robotPose2d.getRotation().getRadians())
       );
 
-      System.out.println("Robot Pose: "+robotPose);
-
     //LimelightHelpers.LimelightResults result = LimelightHelpers.getLatestResults("limelight");//poll limelight measurment
 
     //if any tag found
@@ -119,12 +117,13 @@ public class LimelightAlign extends Command {
       /*Filtering can be added later. We just want to use any tag found */
 
       var goalPose = camTarget.transformBy(TAG_TO_GOAL).toPose2d();
-      System.out.println("Goal Pose"+goalPose);
 
       //Drive to the given target using these PID calculations
       xController.setGoal(goalPose.getX());
       yController.setGoal(goalPose.getY());
       omegaController.setGoal(goalPose.getRotation().getRadians());
+
+      System.out.println("Goal pose: "+goalPose);
 
       //set speed for side to side
       var xSpeed = xController.calculate(robotPose.getX());
@@ -144,6 +143,8 @@ public class LimelightAlign extends Command {
       if (omegaController.atGoal()){
         omegaSpeed=0;
       }
+
+      System.out.println("current speed output: "+xSpeed + ", "+ySpeed +", "+omegaSpeed);
 
       //post speeds to drivetrain
       drivetrain.setControl(

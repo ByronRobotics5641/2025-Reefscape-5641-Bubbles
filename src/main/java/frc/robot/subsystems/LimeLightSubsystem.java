@@ -40,14 +40,14 @@ public class LimeLightSubsystem extends SubsystemBase {
       Double confidence = 1 - ((targetDistance - 1) / 6);
       LimelightHelpers.LimelightResults result =
           LimelightHelpers.getLatestResults(ll);
-      if (LimelightHelpers.getTV(ll)) {
+      if (result.valid) {
         botpose = LimelightHelpers.getBotPose2d_wpiBlue(ll);
-        System.out.println("LLSS Botpose: "+botpose);
-
         if (field.isPoseWithinArea(botpose)) {
           if (drivetrain.getState().Pose.getTranslation().getDistance(botpose.getTranslation()) < 0.5
               || trust
               || result.targets_Fiducials.length > 1) {
+            System.out.println("Adding vision to current odemetry");
+            //add vision data to **current pose. This should be w/in 1M of current pose
             drivetrain.addVisionMeasurement(
                 botpose,
                 Timer.getFPGATimestamp()
