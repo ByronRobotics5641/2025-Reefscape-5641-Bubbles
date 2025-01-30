@@ -7,11 +7,11 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
-
-/*import com.pathplanner.lib.auto.AutoBuilder;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;*/
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -40,6 +40,8 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);//180 if inversion needed, but we're using blue strategy
     /* Keep track if we've ever applied the operator perspective before or not */
+
+    private final LegacySwerveRequest.ApplyChassisSpeeds m_pathApplyRobotSpeeds = new LegacySwerveRequest.ApplyChassisSpeeds();
     private boolean hasAppliedOperatorPerspective = false;
 
 
@@ -87,23 +89,20 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        //configureAutoBuilder();
+        configureAutoBuilder();
     }
 
-    /*private void configureAutoBuilder() 
+    private void configureAutoBuilder() 
     {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
                 () -> getState().Pose,   // Supplier of current robot pose
-                this::,         // Consumer for seeding pose against auto
+                this::seedFieldRelative,         // Consumer for seeding pose against auto
                 () -> getState().speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ),
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)),
                 new PPHolonomicDriveController(
                     // PID constants for translation
                     new PIDConstants(10, 0, 0),
@@ -118,7 +117,7 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
-    }*/
+    }
 
     public Command applyRequest(Supplier<LegacySwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
