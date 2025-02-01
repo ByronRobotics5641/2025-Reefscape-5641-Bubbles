@@ -15,7 +15,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.FieldCentric;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -31,7 +31,7 @@ public class LimelightAlign extends Command {
 
   private static final Transform3d TAG_TO_GOAL = new Transform3d(
     new Translation3d(1.5,0,0),
-    new Rotation3d(0,0,Math.PI)// ROBOT should be 1M away from TARGET, centered with tag, pointing at tag
+    new Rotation3d(0,0,0)// ROBOT should be 1M away from TARGET, centered with tag, pointing at tag
     );
 
   LimeLightSubsystem limelight;
@@ -82,8 +82,8 @@ public class LimelightAlign extends Command {
 
     //set command starting position
     //Pose2d poseProvider = drivetrain.getState().Pose;
-    var robotPose = drivetrain.getState().Pose;
-    omegaController.reset(robotPose.getRotation().getRadians());
+    var robotPose = LimelightHelpers.getTargetPose3d_CameraSpace("limelight");
+    omegaController.reset(robotPose.getRotation().getAngle());
     xController.reset(robotPose.getX());
     yController.reset(robotPose.getY());
 
@@ -98,13 +98,13 @@ public class LimelightAlign extends Command {
 
     //poll the current position
     //Pose2d poseProvider = drivetrain.getState().Pose;
-    var robotPose2d =drivetrain.getState().Pose;
+    var robotPose2d =LimelightHelpers.getTargetPose3d_CameraSpace("limelight");
     var robotPose =
       new Pose3d(
         robotPose2d.getX(),
         robotPose2d.getY(),
         0.0,
-        new Rotation3d(0.0,0.0,robotPose2d.getRotation().getRadians())
+        new Rotation3d(0.0,0.0,robotPose2d.getRotation().getAngle())
       );
 
     //LimelightHelpers.LimelightResults result = LimelightHelpers.getLatestResults("limelight");//poll limelight measurment
@@ -119,9 +119,9 @@ public class LimelightAlign extends Command {
       var goalPose = camTarget.transformBy(TAG_TO_GOAL).toPose2d();
 
       //Drive to the given target using these PID calculations
-      xController.setGoal(goalPose.getX());
-      yController.setGoal(goalPose.getY());
-      omegaController.setGoal(goalPose.getRotation().getRadians());
+      xController.setGoal(TAG_TO_GOAL.getX());
+      yController.setGoal(TAG_TO_GOAL.getY());
+      omegaController.setGoal(TAG_TO_GOAL.getRotation().getAngle());
 
       System.out.println("Goal pose: "+goalPose);
 
@@ -139,7 +139,7 @@ public class LimelightAlign extends Command {
       }
 
       //set rotation speed
-      var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getRadians());
+      var omegaSpeed = omegaController.calculate(robotPose2d.getRotation().getAngle());
       if (omegaController.atGoal()){
         omegaSpeed=0;
       }
@@ -148,9 +148,9 @@ public class LimelightAlign extends Command {
 
       //post speeds to drivetrain
       drivetrain.setControl(
-        drive.withVelocityX(xSpeed)
-           .withVelocityY(ySpeed)
-           .withRotationalRate(omegaSpeed)
+        drive.withVelocityX(xSpeed*Constants.MaxSpeed)
+           //.withVelocityY(ySpeed*Constants.MaxSpeed)
+           //.withRotationalRate(omegaSpeed)
      );
     }
 

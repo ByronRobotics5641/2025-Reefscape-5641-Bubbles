@@ -28,7 +28,7 @@ public class RobotContainer {
   SendableChooser<Command> autoChooser;//selects autos
 
   /*******controllers*******/
-  private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandXboxController joystick = new CommandXboxController(0); // Driver joystick
   
   /*******Set up drive********/
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
