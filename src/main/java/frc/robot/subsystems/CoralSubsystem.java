@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
-  public CoralSubsystem() {}
+  //two motors one axis, one intake/deposit
+  //SuckerFeeder
+  public CoralSubsystem() {
+
+  }
 
   @Override
   public void periodic() {

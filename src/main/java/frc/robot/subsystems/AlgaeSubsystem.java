@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AlgaeSubsystem extends SubsystemBase {
   /** Creates a new AlgaeSubsystem. */
-  public AlgaeSubsystem() {}
+  //has two motors one rotation, one intake/deposit
+  //BottomFeeder
+  public AlgaeSubsystem() {
+
+  }
 
   @Override
   public void periodic() {

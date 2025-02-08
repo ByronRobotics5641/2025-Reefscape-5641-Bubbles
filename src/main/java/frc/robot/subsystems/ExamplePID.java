@@ -20,8 +20,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExamplePID extends SubsystemBase {
- 
-  private final double kDriveTick2Feet = (1.0 / 21)*((6 * Math.PI))* 1/12;
+  
+ //used for hank to drive ten feet 
+ //will not work for sweve drive unless corrected
+
+  private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12;
 
   final double kP = 0.4;
   final double kI = 0.0;
@@ -39,7 +42,7 @@ public class ExamplePID extends SubsystemBase {
   //Configures a new object
   public ExamplePID() {
     encoder = motor.getEncoder();
-    //encoder.setPosition(0);
+    encoder.setPosition(0);
     errorSum = 0;
     lastError = 0;
     lastTimestamp = Timer.getFPGATimestamp();
@@ -48,12 +51,12 @@ public class ExamplePID extends SubsystemBase {
 
 
   /************************************************
-   * This method sets the distance traveled in feet.
+   * This method sets the distance to be traveled.
    * @param setpoint
    ************************************************/
   public void setSetpoint(double setpoint){
     this.setpoint = setpoint;
-    encoder.setPosition(0);
+    //encoder.setPosition(0); resets position... not useful for our subsystems as described
   }
 
   /******************************************************************

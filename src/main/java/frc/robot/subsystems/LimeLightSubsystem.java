@@ -46,7 +46,6 @@ public class LimeLightSubsystem extends SubsystemBase {
           if (drivetrain.getState().Pose.getTranslation().getDistance(botpose.getTranslation()) < 0.5
               || trust
               || result.targets_Fiducials.length > 1) {
-            System.out.println("Adding vision to current odemetry");
             //add vision data to **current pose. This should be w/in 1M of current pose
             drivetrain.addVisionMeasurement(
                 botpose,
