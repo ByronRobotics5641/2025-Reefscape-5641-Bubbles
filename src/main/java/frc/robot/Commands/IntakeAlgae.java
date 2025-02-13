@@ -5,37 +5,39 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.AlgaeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralAxis extends Command {
-  /** Creates a new CoralAxis. */
-  CoralSubsystem cAngle;
+public class IntakeAlgae extends Command {
+  /** Creates a new IntakeAlgae. */
+
+  AlgaeSubsystem algae;
   double speed;
 
-  public CoralAxis(CoralSubsystem cAngle, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.cAngle = cAngle;
-    addRequirements(cAngle);
+
+  public IntakeAlgae(AlgaeSubsystem algae, double speed) {
+    this.algae = algae;
+    addRequirements(algae);
     this.speed = speed;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    cAngle.angleDriver(speed);
+    algae.algaeDriver(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    cAngle.angleDriver(speed);
+    algae.algaeDriver(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    cAngle.angleDriver(0);
+    algae.algaeDriver(0);
   }
 
   // Returns true when the command should end.

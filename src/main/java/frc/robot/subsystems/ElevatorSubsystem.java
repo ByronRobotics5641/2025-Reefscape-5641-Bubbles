@@ -19,18 +19,38 @@ public class ElevatorSubsystem extends SubsystemBase {
   SparkMax lead = new SparkMax(5, MotorType.kBrushless);
   SparkMax follow = new SparkMax(6, MotorType.kBrushless);
 
-  public void lift() {
+
+  public void eleAngle(double leftStickValue, boolean nothing) {
+    if(nothing) {
+      if(leftStickValue == 0 && nothing) {
+        lead.set(leftStickValue * 0);
+        follow.set(leftStickValue * 0);
+      }
+      else{
+        lead.set(leftStickValue * 0);
+        follow.set(leftStickValue * 0);
+      }
+    }
+  }
+  /*public void eleDriver(double speed) {
+    lead.set(speed);
+    follow.set(speed);
+  }
+  public void eleLift() {
     lead.set(0);
     follow.set(0);
   }
-  public void lower() {
-    lead.set(-0);
-    follow.set(-0);
-  }
-  public void stopEle() {
+  public void eleDown() {
     lead.set(0);
     follow.set(0);
   }
+  public void eleStop() {
+    lead.set(0);
+    lead.set(0);
+  }*/
+
+
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

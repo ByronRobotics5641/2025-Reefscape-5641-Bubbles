@@ -12,12 +12,16 @@ import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.TestAuto;
 import frc.robot.Commands.LimelightAlign;
@@ -29,6 +33,38 @@ public class RobotContainer {
 
   /*******controllers*******/
   private final CommandXboxController joystick = new CommandXboxController(0); // Driver joystick
+  private final Joystick manip = new Joystick(1); //manip joystick
+
+  private final CommandXboxController m_manipController =
+  new CommandXboxController(1);
+
+
+  /*******subsystems********/
+  private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
+  private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
+  /******pov buttons******/
+
+
+  /******commands******/
+  private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
+  private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
+  private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
+
+  private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
+  private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
+  private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
+
+  private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
+  private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
+  private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
+
+  //private final Command eleAngle = Commands.runOnce(elevatorSubsystem::eleAngle, elevatorSubsystem);
+  //private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
+  //private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
+  //private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
+  //private final Command m_eleDriver = Commands.runOnce(elevatorSubsystem::eleDriver, elevatorSubsystem);
   
   /*******Set up drive********/
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -72,10 +108,26 @@ public class RobotContainer {
 
     joystick.button(3).whileTrue(limelightAlign);
 
+    /*****Assigning Stick Values*****/
+    //eleLift.whileTrue(eleDriver);
+
+    /*****Assigning Buttons*****/
+
+    m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
+    m_manipController.rightTrigger().whileTrue(m_coralOut).onFalse(m_coralStop);
+
+    m_manipController.b().whileTrue(m_upAngle).onFalse(m_stopAngle);
+    m_manipController.a().whileTrue(m_downAngle).onFalse(m_stopAngle);
+
+    m_manipController.leftBumper().whileTrue(m_startIntake).onFalse(m_stopIntake);
+    m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
+
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+
+
   }
 
   public RobotContainer() {

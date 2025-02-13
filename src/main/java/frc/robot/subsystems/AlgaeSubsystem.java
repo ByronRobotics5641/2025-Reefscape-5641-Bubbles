@@ -24,6 +24,11 @@ public class AlgaeSubsystem extends SubsystemBase {
     SparkMax arm = new SparkMax(1, MotorType.kBrushless);
     SparkFlex intake = new SparkFlex(2, MotorType.kBrushless);
 
+
+    public void algaeDriver(double speed) {
+      intake.set(speed);
+    }
+
     private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12;
 
     final double kP = 0;

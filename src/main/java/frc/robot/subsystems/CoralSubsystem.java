@@ -18,6 +18,13 @@ public class CoralSubsystem extends SubsystemBase {
     SparkMax coral = new SparkMax(4, MotorType.kBrushless);
   
 
+  public void coralDriver(double speed) {
+    coral.set(speed);
+  }
+  public void angleDriver(double speed) {
+    rotate.set(speed);
+  }
+
   public void downAngle() {
     rotate.set(0);
   }
