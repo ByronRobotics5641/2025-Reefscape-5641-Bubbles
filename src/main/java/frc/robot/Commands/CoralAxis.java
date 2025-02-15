@@ -4,6 +4,8 @@
 
 package frc.robot.Commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
 
@@ -11,13 +13,23 @@ import frc.robot.subsystems.CoralSubsystem;
 public class CoralAxis extends Command {
   /** Creates a new CoralAxis. */
   CoralSubsystem cAngle;
+  DoubleSupplier speedSupplier;
   double speed;
 
+  //this constructor handles double input. great for auton... if we aren't using PID
   public CoralAxis(CoralSubsystem cAngle, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.cAngle = cAngle;
     addRequirements(cAngle);
     this.speed = speed;
+  }
+
+  //constructor for handling a Controller input (DoubleSupplier)
+  public CoralAxis(CoralSubsystem cAngle, DoubleSupplier speeedSupplier) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.cAngle = cAngle;
+    addRequirements(cAngle);
+    this.speed = speedSupplier.getAsDouble();
   }
 
   // Called when the command is initially scheduled.

@@ -19,9 +19,24 @@ public class ElevatorSubsystem extends SubsystemBase {
   SparkMax lead = new SparkMax(5, MotorType.kBrushless);
   SparkMax follow = new SparkMax(6, MotorType.kBrushless);
 
+<<<<<<< HEAD
   public void eleAngle(double speed) {
     lead.set(speed);
     lead.set(speed);
+=======
+  // stick value is DoubleSupplier, passed in through command or instant command with ()->m_manipController.getLeftY()
+  public void eleAngle(double leftStickValue, boolean nothing) {
+    if(nothing) {
+      if(leftStickValue == 0 && nothing) {
+        lead.set(leftStickValue * 0);
+        follow.set(leftStickValue * 0);
+      }
+      else{
+        lead.set(leftStickValue * 0);
+        follow.set(leftStickValue * 0);
+      }
+    }
+>>>>>>> cd4c8f8d93d196b0e19a3cc6c83886b92cd3ecb6
   }
 
   public void eleLift() {
