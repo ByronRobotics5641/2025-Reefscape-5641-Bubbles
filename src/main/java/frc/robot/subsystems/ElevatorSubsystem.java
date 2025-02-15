@@ -14,24 +14,41 @@ public class ElevatorSubsystem extends SubsystemBase {
   //Attatches to SuckerFish/CoralMachine
   // D-pad/pov up = 0°, bottom = 180°
   //two motors one lead, one follow 
-
+  
   public ElevatorSubsystem() {}
   SparkMax lead = new SparkMax(5, MotorType.kBrushless);
   SparkMax follow = new SparkMax(6, MotorType.kBrushless);
 
-
-  public void eleAngle(double leftStickValue, boolean nothing) {
-    if(nothing) {
-      if(leftStickValue == 0 && nothing) {
-        lead.set(leftStickValue * 0);
-        follow.set(leftStickValue * 0);
-      }
-      else{
-        lead.set(leftStickValue * 0);
-        follow.set(leftStickValue * 0);
-      }
-    }
+  public void eleAngle(double speed) {
+    lead.set(speed);
+    lead.set(speed);
   }
+
+  public void eleLift() {
+    lead.set(0);
+    follow.set(0);
+  }
+  public void eleDown() {
+    lead.set(0);
+    follow.set( 0);
+  }
+  
+  /*public void eleAngle(double leftStickValue) {
+    if(leftStickValue > .1) {
+      lead.set(-leftStickValue * .6);
+      follow.set(leftStickValue * .6);
+    }
+    else if(leftStickValue < -.1) {
+      lead.set(leftStickValue * .6);
+      follow.set(-leftStickValue * .6);
+    }
+    else{
+      lead.set(0);
+      follow.set(0);
+    }
+  }*/
+
+
   /*public void eleDriver(double speed) {
     lead.set(speed);
     follow.set(speed);
@@ -43,11 +60,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void eleDown() {
     lead.set(0);
     follow.set(0);
-  }
+  }*/
   public void eleStop() {
     lead.set(0);
     lead.set(0);
-  }*/
+  }
 
 
   

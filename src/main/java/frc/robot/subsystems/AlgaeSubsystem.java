@@ -53,6 +53,10 @@ public class AlgaeSubsystem extends SubsystemBase {
     public void stopIntake() {
       intake.set(0);
     }
+
+    public void algaeAngle(double speed) {
+      arm.set(speed);
+    }
     public void algaeAngleUp(double rightStickvalue) {
       arm.set(-rightStickvalue * 0);
     }

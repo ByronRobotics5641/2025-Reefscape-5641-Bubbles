@@ -44,6 +44,7 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
+
   /******pov buttons******/
 
 
@@ -60,11 +61,9 @@ public class RobotContainer {
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
   private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
 
-  //private final Command eleAngle = Commands.runOnce(elevatorSubsystem::eleAngle, elevatorSubsystem);
-  //private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
-  //private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
-  //private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
-  //private final Command m_eleDriver = Commands.runOnce(elevatorSubsystem::eleDriver, elevatorSubsystem);
+  private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
+  private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
+  private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
   
   /*******Set up drive********/
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -109,15 +108,18 @@ public class RobotContainer {
     joystick.button(3).whileTrue(limelightAlign);
 
     /*****Assigning Stick Values*****/
-    //eleLift.whileTrue(eleDriver);
+    
 
     /*****Assigning Buttons*****/
 
     m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
     m_manipController.rightTrigger().whileTrue(m_coralOut).onFalse(m_coralStop);
 
-    m_manipController.b().whileTrue(m_upAngle).onFalse(m_stopAngle);
-    m_manipController.a().whileTrue(m_downAngle).onFalse(m_stopAngle);
+    m_manipController.back().whileTrue(m_eleLift).onFalse(m_eleStop);
+    m_manipController.start().whileTrue(m_eleDown).onFalse(m_eleStop);
+
+    m_manipController.y().whileTrue(m_upAngle).onFalse(m_stopAngle);
+    m_manipController.x().whileTrue(m_downAngle).onFalse(m_stopAngle);
 
     m_manipController.leftBumper().whileTrue(m_startIntake).onFalse(m_stopIntake);
     m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
