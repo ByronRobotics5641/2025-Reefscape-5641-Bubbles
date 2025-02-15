@@ -24,6 +24,7 @@ import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.TestAuto;
+import frc.robot.Commands.CoralAxis;
 import frc.robot.Commands.LimelightAlign;
 
 public class RobotContainer {
@@ -51,6 +52,9 @@ public class RobotContainer {
   private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
   private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
+
+  //from Commands folder/package------------------------>>subsystem------->>controller input
+  private final CoralAxis m_CoralAxis = new CoralAxis(coralSubsystem, m_manipController.getRightY()); //check with control layout
 
   private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
   private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
@@ -121,6 +125,8 @@ public class RobotContainer {
 
     m_manipController.leftBumper().whileTrue(m_startIntake).onFalse(m_stopIntake);
     m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
+
+    coralSubsystem.setDefaultCommand(m_CoralAxis);// defaults to stick value, can be linked to a button or command trigger later
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
