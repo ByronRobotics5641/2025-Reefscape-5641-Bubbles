@@ -29,26 +29,14 @@ public class AlgaeSubsystem extends SubsystemBase {
       intake.set(speed);
     }
 
-    private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12;
-
-    final double kP = 0;
-    final double kI = 0;
-    final double iLimit = 0;
-    final double kD = 0;
-  
-    double setpoint = 0;
-    double errorSum = 0;
-    double lastTimestamp = 0;
-    double lastError = 0;
-
-    RelativeEncoder encoder;
+    
 
 
     public void startIntake() {
-      intake.set(0);
+      intake.set(1);
     }
     public void reverseIntake() {
-      intake.set(0);
+      intake.set(1);
     }
     public void stopIntake() {
       intake.set(0);
@@ -58,34 +46,15 @@ public class AlgaeSubsystem extends SubsystemBase {
       arm.set(speed);
     }
     public void algaeAngleUp(double rightStickvalue) {
-      arm.set(-rightStickvalue * 0);
+      arm.set(-rightStickvalue * .3);
     }
     public void algaeAngleDown(double rightStickvalue) {
-      arm.set(rightStickvalue * 0);
+      arm.set(rightStickvalue * .3);
     }
-    public void pidArm() {
-
-      double sensorPosition = encoder.getPosition() * kDriveTick2Feet;
-      SmartDashboard.getNumber("position", sensorPosition);
-
-
-      double error = setpoint - sensorPosition;
-      double dt = Timer.getFPGATimestamp() - lastTimestamp;
-
-
-      if (Math.abs(error) < iLimit) {
-        errorSum += error * dt;
-      }
-
-      double errorRate = (error - lastError) / dt;
-
-      double outputSpeed = kP * error + kI * errorSum + kD * errorRate;
-
-      arm.set(outputSpeed);
-
-    }
-  
-
+ 
+     public void mateAngle() {
+      arm.set(0);
+     }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

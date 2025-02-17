@@ -34,6 +34,8 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+    RobotConfig config;
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -51,12 +53,16 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
+
     }
     public CommandSwerveDrivetrain(LegacySwerveDrivetrainConstants driveTrainConstants, LegacySwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
+
     }
         /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -88,6 +94,7 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
         if (Utils.isSimulation()) {
             startSimThread();
         }
+            
         configureAutoBuilder();
     }
 

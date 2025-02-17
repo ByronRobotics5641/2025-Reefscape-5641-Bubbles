@@ -1,0 +1,40 @@
+{
+  "robotWidth": 0.7375,
+  "robotLength": 0.75,
+  "holonomicMode": true,
+  "pathFolders": [
+    "3 Coral Auto",
+    "Back Auto",
+    "Front Auto",
+    "Right Far Auto",
+    "Right Near Auto"
+  ],
+  "autoFolders": [
+    "2025 ReefScape"
+  ],
+  "defaultMaxVel": 5.0,
+  "defaultMaxAccel": 4.724,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "defaultNominalVoltage": 12.0,
+  "robotMass": 29.03,
+  "robotMOI": 2.0,
+  "robotTrackwidth": 0.546,
+  "driveWheelRadius": 0.1,
+  "driveGearing": 6.75,
+  "maxDriveSpeed": 8.255,
+  "driveMotorType": "krakenX60",
+  "driveCurrentLimit": 60.0,
+  "wheelCOF": 1.0,
+  "flModuleX": 0.325,
+  "flModuleY": 0.318,
+  "frModuleX": 0.325,
+  "frModuleY": -0.318,
+  "blModuleX": -0.325,
+  "blModuleY": 0.318,
+  "brModuleX": -0.325,
+  "brModuleY": -0.318,
+  "bumperOffsetX": 0.0,
+  "bumperOffsetY": 0.0,
+  "robotFeatures": []
+}

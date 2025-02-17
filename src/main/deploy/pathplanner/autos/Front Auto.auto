@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Seg 1 Front"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Seg 2 Front"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "2025 ReefScape",
+  "choreoAuto": false
+}
