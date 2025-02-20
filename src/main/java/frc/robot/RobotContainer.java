@@ -59,7 +59,11 @@ public class RobotContainer {
   DigitalInput angleLimit = new DigitalInput(0);
   Trigger AngleLimit = new Trigger(angleLimit::get);
 
+  DigitalInput eleRight = new DigitalInput(1);
+  Trigger EleRight = new Trigger(eleRight::get);
 
+  DigitalInput eleLeft = new DigitalInput(2);
+  Trigger EleLeft = new Trigger(eleLeft::get);
 
   /******pov buttons******/
   double driveSpeed = .6;
@@ -87,6 +91,8 @@ public class RobotContainer {
   private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
   private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
   private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
+  private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
+  private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
   
   /*******Set up drive********/
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -133,6 +139,9 @@ public class RobotContainer {
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     joystick.button(3).whileTrue(limelightAlign);
+
+    joystick.leftBumper().whileTrue(m_eleLeft);
+    joystick.rightBumper().whileTrue(m_eleRight);
 //*/ 
 
     /*****PS5*****/
@@ -158,6 +167,9 @@ public class RobotContainer {
     driver.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     driver.square().whileTrue(limelightAlign);
+
+    driver.L1().whileTrue(m_eleLeft);
+    driver.R1().whileTrue(m_eleRight);
 //*/ 
 
     /*****Assigning Stick Values*****/
@@ -181,7 +193,8 @@ public class RobotContainer {
 
     /*****Trigger Assign*****/
     AngleLimit.whileTrue(m_mateAngle);
-
+    //EleRight.whileTrue();
+    //EleLeft.whileTrue();
 
 
     if (Utils.isSimulation()) {

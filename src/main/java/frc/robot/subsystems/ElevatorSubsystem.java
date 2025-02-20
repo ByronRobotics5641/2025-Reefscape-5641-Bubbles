@@ -32,6 +32,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   SparkMax follow = new SparkMax(6, MotorType.kBrushless);
   RelativeEncoder encoder;
 
+
   private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12;
 
   public ElevatorSubsystem() {  
@@ -50,6 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     lead.set(speed);
     follow.set(speed);
   }
+
   public void eleLift() {
     lead.set(0);
     follow.set(0);
@@ -59,31 +61,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     follow.set( 0);
   }
 
-  /*public void eleAngle(double leftStickValue) {
-    if(leftStickValue > .1) {
-      lead.set(-leftStickValue * .6);
-      follow.set(leftStickValue * .6);
-    }
-    else if(leftStickValue < -.1) {
-      lead.set(leftStickValue * .6);
-      follow.set(-leftStickValue * .6);
-    }
-    else{
-      lead.set(0);
-      follow.set(0);
-    }
-  }*/
-
-
-
-  /*public void eleLift() {
-    lead.set(0);
-    follow.set(0);
+  public void eleRight() {
+    lead.set(.2);
   }
-  public void eleDown() {
-    lead.set(0);
-    follow.set(0);
-  }*/
+  public void eleLeft() {
+    follow.set(-.2);
+  }
+
+
   public void eleStop() {
     lead.set(0);
     lead.set(0);
