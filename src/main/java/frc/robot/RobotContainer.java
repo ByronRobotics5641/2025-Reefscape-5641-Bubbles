@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -56,6 +57,10 @@ public class RobotContainer {
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
+  /********speed limit variables****/
+  double driveSpeed = .6;
+  double turtleSpeed = .4;
+
   /*****Triggers*****/
   DigitalInput angleLimit = new DigitalInput(0);
   Trigger AngleLimit = new Trigger(angleLimit::get);
@@ -67,8 +72,8 @@ public class RobotContainer {
   Trigger EleLeft = new Trigger(eleLeft::get);
 
   /******pov buttons******/
-  double driveSpeed = .6;
-  double turtleSpeed = .4;
+ 
+
 
   /******commands******/
   private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
@@ -96,6 +101,14 @@ public class RobotContainer {
   private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
   private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
   private final Command m_eleReset = Commands.runOnce(elevatorSubsystem::eleReset, elevatorSubsystem);
+
+  //for elevator PID
+  private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
+  private final Command m_eleDownCount = Commands.runOnce(elevatorSubsystem::downCount, elevatorSubsystem);
+  private final Command m_eleManual = Commands.run(() ->elevatorSubsystem.setIsManual(true), elevatorSubsystem);
+  private final Command m_elePID = Commands.run(() ->elevatorSubsystem.setIsManual(false), elevatorSubsystem);
+
+
   //private final Command m_eleNoDown = Commands.runOnce(elevatorSubsystem::eleNoDown, elevatorSubsystem);
   
   /*******Set up drive********/
@@ -148,11 +161,12 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    joystick.button(3).whileTrue(limelightAlign);
+    //joystick.button(3).whileTrue(limelightAlign);
 
     joystick.leftTrigger().whileTrue(m_eleLeft);
     joystick.rightTrigger().whileTrue(m_eleRight);
 //*/ 
+
 
     /*****PS5*****/
         drivetrain.setDefaultCommand( drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-driver.getRawAxis(1) * Constants.MaxSpeed * driveSpeed),3)) // Drive forward with
@@ -181,11 +195,12 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driver.circle().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    driver.square().whileTrue(limelightAlign);
+    //driver.square().whileTrue(limelightAlign);
 
     driver.L2().whileTrue(m_eleLeft);
     driver.R2().whileTrue(m_eleRight);
 //*/ 
+
 
     /*****Assigning Stick Values*****/
     algaeSubsystem.setDefaultCommand(m_algaeAngle);// defaults to stick value, can be linked to a button or command trigger later
@@ -204,6 +219,7 @@ public class RobotContainer {
     m_manipController.leftBumper().whileTrue(m_startIntake).onFalse(m_stopIntake);
     m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
 
+
     /*****Trigger Assign*****/
     //AngleLimit.whileTrue(m_algaeLimiter);
     
@@ -219,18 +235,23 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-    configureBindings();
+
 
     NamedCommands.registerCommand("Shoot Coral", m_coralOut);
+    NamedCommands.registerCommand("Load Coral", m_coralIn);
 
 
     pathChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("path Chooser", pathChooser);
 
+    
+
     //autoChooser = new SendableChooser<>();//initialize chooser for autos
     //autoChooser.setDefaultOption("None", Commands.none());//do nothing
     //autoChooser.addOption("TEST: Swerve",testSwerve);     //pit test
+
+    configureBindings();
   }
 
   public Command getAutonomousCommand() {

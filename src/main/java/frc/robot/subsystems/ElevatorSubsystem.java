@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   RelativeEncoder encoder;
 
 
-  private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12;
+  private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12; //change for gear ratio
 
   public ElevatorSubsystem() {  
     //Configures a new object
@@ -115,7 +115,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     else {
       this.setpoint = 0;
     }
-    //encoder.setPosition(0); resets position... not useful for our subsystems as described
+    //encoder.setPosition(0); resets position
   }
   public void setSetpoint(int setpoint) {
     this.count = setpoint;
@@ -149,6 +149,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (!isManual)
+      setSetpoint();
       heightToPoint();
     
   }
