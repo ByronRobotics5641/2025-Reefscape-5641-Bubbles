@@ -15,34 +15,40 @@ public class AlgaeDriver extends Command {
   AlgaeSubsystem algae;
   DoubleSupplier speedSupplier;
   double speed;
+  double rightStickValue;
+  boolean armNo = false;
 
-  public AlgaeDriver(AlgaeSubsystem algae, double speed) {
+  public AlgaeDriver(AlgaeSubsystem algae, double speed, double rightStickValue) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algae = algae;
     addRequirements(algae);
     this.speed = speed;
+    this.rightStickValue = rightStickValue;
   }
-  public AlgaeDriver(AlgaeSubsystem algae, DoubleSupplier speedSupplier) {
+  public AlgaeDriver(AlgaeSubsystem algae, double speedSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algae = algae;
     addRequirements(algae);
-    this.speed = speedSupplier.getAsDouble();
+    this.speed = speedSupplier;
+    //this.rightStickValue = speedSupplier.getAsDouble();
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    algae.algaeAngle(speed, armNo);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algae.algaeAngle(speed);
+    algae.algaeAngle(speed, armNo);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algae.algaeAngle(0);
+    algae.algaeAngle(0, armNo);
   }
 
   // Returns true when the command should end.

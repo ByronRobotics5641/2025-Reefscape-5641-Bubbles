@@ -17,6 +17,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   //Attatches to SuckerFish/CoralMachine
   // D-pad/pov up = 0°, bottom = 180°
   //two motors one lead, one follow 
+  
+  boolean isManual = true;//start without PID... change in Elevator PID commands, call setIsManual(false)
+
   final double kP = 0.4;
   final double kI = 0.0;
   final double iLimit = 1;
@@ -44,28 +47,41 @@ public class ElevatorSubsystem extends SubsystemBase {
     lastError = 0;
     lastTimestamp = Timer.getFPGATimestamp();}
   
-
-
+  /******enables/disables PID*******/
+  public void setIsManual(boolean isManual){
+    this.isManual = isManual;
+  }
   // stick value is DoubleSupplier, passed in through command or instant command with ()->m_manipController.getLeftY()
-  public void eleDriver(double speed) {
-    lead.set(speed);
-    follow.set(speed);
+  public void eleDriver(double speed, boolean noDown) {
+    if(!noDown && speed > 0) {
+      lead.set(0);
+      follow.set(0);
+    }
+    else{
+      lead.set(speed *.4);
+      follow.set(speed *.4);
+    }
   }
 
-  public void eleLift() {
+  public void eleReset() {
+    encoder.setPosition(0);
+    setSetpoint(0);
+  }
+  /*public void eleLift() {
     lead.set(0);
     follow.set(0);
   }
   public void eleDown() {
     lead.set(0);
     follow.set( 0);
-  }
+  }*/
+
 
   public void eleRight() {
     lead.set(.2);
   }
   public void eleLeft() {
-    follow.set(-.2);
+    follow.set(.2);
   }
 
 
@@ -132,5 +148,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (!isManual)
+      heightToPoint();
+    
   }
 }

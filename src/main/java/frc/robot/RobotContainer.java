@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 //import com.ctre.phoenix6.swerve.SwerveDrivetrain.OdometryThread;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,8 +32,8 @@ import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.TestAuto;
-import frc.robot.Commands.AlgaeDriver;
-import frc.robot.Commands.ElevatorDrive;
+//import frc.robot.Commands.AlgaeDriver;
+//import frc.robot.Commands.ElevatorDrive;
 import frc.robot.Commands.LimelightAlign;
 
 public class RobotContainer {
@@ -43,7 +44,7 @@ public class RobotContainer {
 
   /*******controllers*******/
   private final CommandPS5Controller driver = new CommandPS5Controller(0);
-  private final CommandXboxController joystick = new CommandXboxController(0); // Driver joystick
+  private final CommandXboxController joystick = new CommandXboxController(2); // Driver joystick
   private final Joystick manip = new Joystick(1); //manip joystick
 
   private final CommandXboxController m_manipController =
@@ -75,9 +76,13 @@ public class RobotContainer {
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
 
   //from Commands folder/package------------------------>>subsystem------->>controller input
-  private final AlgaeDriver m_algaeAngle = new AlgaeDriver(algaeSubsystem, m_manipController.getRightY()); //check with control layout
+  //private final AlgaeDriver m_algaeAngle = new AlgaeDriver(algaeSubsystem, m_manipController.getRightY()); //check with control layout
+  private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRightY(), 0.2), angleLimit.get()), algaeSubsystem);
+  //private final Command m_algaeLimiter = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(-Math.abs(m_manipController.getRightY()), 0.2), angleLimit.get()), algaeSubsystem);
 
-  private final ElevatorDrive m_eleDriver = new ElevatorDrive(elevatorSubsystem, m_manipController.getLeftY());
+  private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY(), eleLeft.get() && eleRight.get()), elevatorSubsystem);
+  //private final Command m_eleLimiter = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY()), elevatorSubsystem);
+
 
   private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
   private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
@@ -86,13 +91,12 @@ public class RobotContainer {
   private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
   private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
-  private final Command m_mateAngle = Commands.runOnce(algaeSubsystem::mateAngle, algaeSubsystem);
 
-  private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
-  private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
   private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
   private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
   private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
+  private final Command m_eleReset = Commands.runOnce(elevatorSubsystem::eleReset, elevatorSubsystem);
+  //private final Command m_eleNoDown = Commands.runOnce(elevatorSubsystem::eleNoDown, elevatorSubsystem);
   
   /*******Set up drive********/
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
@@ -119,7 +123,13 @@ public class RobotContainer {
   private void configureBindings() {
 
     /*****Xbox*****/
-       drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+      drivetrain.setDefaultCommand(
+        drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
+                                                                                                                                                                                                // negative Y (forward)
+            .withVelocityY(0.2 * Math.pow((-joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
+            .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(4) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
+        ));
+       joystick.rightBumper().whileFalse( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
             .withVelocityY(0.2 * Math.pow((-joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
@@ -140,17 +150,22 @@ public class RobotContainer {
 
     joystick.button(3).whileTrue(limelightAlign);
 
-    joystick.leftBumper().whileTrue(m_eleLeft);
-    joystick.rightBumper().whileTrue(m_eleRight);
+    joystick.leftTrigger().whileTrue(m_eleLeft);
+    joystick.rightTrigger().whileTrue(m_eleRight);
 //*/ 
 
     /*****PS5*****/
-        /*drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-driver.getRawAxis(1) * Constants.MaxSpeed * driveSpeed),3)) // Drive forward with
-                                                                                                                                                                                                // negative Y (forward)
-            .withVelocityY(0.2 * Math.pow((-driver.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
+        drivetrain.setDefaultCommand( drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-driver.getRawAxis(1) * Constants.MaxSpeed * driveSpeed),3)) // Drive forward with
+        // negative Y (forward)
+          .withVelocityY(0.2 * Math.pow((-driver.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
             .withRotationalRate(0.2*Math.pow((-driver.getRawAxis(2) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
-         ));
+            )); // Drivetrain will execute this command periodically
+          driver.R1().whileFalse(
+            drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-driver.getRawAxis(1) * Constants.MaxSpeed * driveSpeed),3)) // Drive forward with
+                                                                                                                                                                                                    // negative Y (forward)
+                .withVelocityY(0.2 * Math.pow((-driver.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
+                .withRotationalRate(0.2*Math.pow((-driver.getRawAxis(2) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
+            ));
           driver.R1().whileTrue( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((turtleSpeed*-driver.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
@@ -168,8 +183,8 @@ public class RobotContainer {
 
     driver.square().whileTrue(limelightAlign);
 
-    driver.L1().whileTrue(m_eleLeft);
-    driver.R1().whileTrue(m_eleRight);
+    driver.L2().whileTrue(m_eleLeft);
+    driver.R2().whileTrue(m_eleRight);
 //*/ 
 
     /*****Assigning Stick Values*****/
@@ -182,9 +197,7 @@ public class RobotContainer {
     m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
     m_manipController.rightTrigger().whileTrue(m_coralOut).onFalse(m_coralStop);
 
-    m_manipController.back().whileTrue(m_eleLift).onFalse(m_eleStop);
-    m_manipController.start().whileTrue(m_eleDown).onFalse(m_eleStop);
-
+    
     m_manipController.y().whileTrue(m_upAngle).onFalse(m_stopAngle);
     m_manipController.x().whileTrue(m_downAngle).onFalse(m_stopAngle);
 
@@ -192,9 +205,9 @@ public class RobotContainer {
     m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
 
     /*****Trigger Assign*****/
-    AngleLimit.whileTrue(m_mateAngle);
-    //EleRight.whileTrue();
-    //EleLeft.whileTrue();
+    //AngleLimit.whileTrue(m_algaeLimiter);
+    
+    EleRight.or(EleLeft).whileTrue(m_eleReset);
 
 
     if (Utils.isSimulation()) {

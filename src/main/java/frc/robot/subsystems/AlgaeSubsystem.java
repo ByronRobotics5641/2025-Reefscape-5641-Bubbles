@@ -21,7 +21,7 @@ public class AlgaeSubsystem extends SubsystemBase {
   //has two motors one rotation, one intake/deposit
   //BottomFeeder
   public AlgaeSubsystem() {}
-    SparkMax arm = new SparkMax(1, MotorType.kBrushless);
+    SparkMax arm = new SparkMax(7, MotorType.kBrushless);
     SparkFlex intake = new SparkFlex(2, MotorType.kBrushless);
 
 
@@ -36,21 +36,30 @@ public class AlgaeSubsystem extends SubsystemBase {
       intake.set(1);
     }
     public void reverseIntake() {
-      intake.set(1);
+      intake.set(-1);
     }
     public void stopIntake() {
       intake.set(0);
     }
 
-    public void algaeAngle(double speed) {
-      arm.set(speed);
+    public void algaeAngle(double speed, boolean armNo) {
+      if(armNo && speed > 0) {
+        arm.set(0);
+      }
+      else {
+        arm.set(speed * .4);
+      }
     }
+
+
+    /*****Not needed if algaeAngle takes stick value
+     
     public void algaeAngleUp(double rightStickvalue) {
       arm.set(-rightStickvalue * .3);
     }
     public void algaeAngleDown(double rightStickvalue) {
       arm.set(rightStickvalue * .3);
-    }
+    }*/
  
      public void mateAngle() {
       arm.set(0);
