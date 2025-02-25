@@ -11,15 +11,45 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Coral"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Coral"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Seg 2 Front"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Load Coral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Coral"
           }
         }
       ]

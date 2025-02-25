@@ -16,23 +16,26 @@ public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
   //two motors one axis, one intake/deposit
   //SuckerFeeder
-    private final double kDriveTick2Degrees = 360 / 42 * 100;
+    private final double kDriveTick2Degrees = 42 / 360 / 100;
 
   final double kP = 0.4;
-  final double kI = 0.0;
+  final double kI = 0.01;
   final double iLimit = 1;
-  final double kD = 0.08;
+  final double kD = 0.02;
 
   double setpoint = 0;
   double errorSum = 0;
   double lastTimestamp = 0;
   double lastError = 0;
 
+  boolean holdAngle = false;
+
   SparkMax rotate = new SparkMax(3, MotorType.kBrushless);
   SparkMax coral = new SparkMax(4, MotorType.kBrushless);
   RelativeEncoder encoder;
 
   //Configures a new object
+
    
   public CoralSubsystem() {
     encoder = rotate.getEncoder();
@@ -70,10 +73,16 @@ public class CoralSubsystem extends SubsystemBase {
   public void coralStop() {
     coral.set(0);
   }
-  public void setSetpoint(double setpoint){
-    this.setpoint = setpoint;
-    //encoder.setPosition(0); resets position... not useful for our subsystems as described
+
+  public void holdAngle(boolean holdAngle) {
+    this.holdAngle = holdAngle;
   }
+
+  /*public void setSetpoint(){
+    this.setpoint = setpoint;
+    this.setpoint = 0;
+    //encoder.setPosition(0); resets position... not useful for our subsystems as described
+  }*/
   public void angleToPoint(){
 
     double sensorPosition = encoder.getPosition() * kDriveTick2Degrees;
@@ -98,5 +107,8 @@ public class CoralSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(holdAngle) {
+      angleToPoint();
+    }
   }
 }

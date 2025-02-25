@@ -36,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   RelativeEncoder encoder;
 
 
-  private final double kDriveTick2Feet = 1.0 / 21 * 6 * Math.PI / 12; //change for gear ratio
+  private final double kDriveTick2Feet = 1.0 / 42 * 1 / 64 * 6 * Math.PI / 12; //change for gear ratio
 
   public ElevatorSubsystem() {  
     //Configures a new object
@@ -45,7 +45,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     encoder.setPosition(0);
     errorSum = 0;
     lastError = 0;
-    lastTimestamp = Timer.getFPGATimestamp();}
+    lastTimestamp = Timer.getFPGATimestamp();
+  
+    SmartDashboard.getNumber("Distance Measured", encoder.getPosition() * kDriveTick2Feet);
+  }
   
   /******enables/disables PID*******/
   public void setIsManual(boolean isManual){
@@ -53,7 +56,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
   // stick value is DoubleSupplier, passed in through command or instant command with ()->m_manipController.getLeftY()
   public void eleDriver(double speed, boolean noDown) {
-    if(!noDown && speed > 0) {
+    if(noDown && speed > 0) {
       lead.set(0);
       follow.set(0);
     }
@@ -90,6 +93,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     lead.set(0);
   }
   public void upCount() {
+    setIsManual(false);
     if(count < 3) {
       count++;
     }
@@ -98,6 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
   public void downCount() {
+    setIsManual(false);
     if(count > -1) {
       count--;
     }
@@ -106,6 +111,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
   }
   public void setSetpoint() {
+    setIsManual(false);
     if(count == 1) {
       this.setpoint = 1;
     }
@@ -148,9 +154,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (!isManual)
+    /*if (!isManual)
       setSetpoint();
-      heightToPoint();
+      heightToPoint();*/
     
   }
+ // SmartDashboard.putNumber("Distance Measured", encoder.getPosition() * kDriveTick2Feet);
 }

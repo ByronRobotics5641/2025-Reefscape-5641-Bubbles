@@ -72,13 +72,11 @@ public class RobotContainer {
   Trigger EleLeft = new Trigger(eleLeft::get);
 
   /******pov buttons******/
- 
+  POVButton eleHigh = new POVButton(manip, 0);
+  POVButton eleLow = new POVButton(manip, 180);
 
 
-  /******commands******/
-  private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
-  private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
-  private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
+
 
   //from Commands folder/package------------------------>>subsystem------->>controller input
   //private final AlgaeDriver m_algaeAngle = new AlgaeDriver(algaeSubsystem, m_manipController.getRightY()); //check with control layout
@@ -88,10 +86,16 @@ public class RobotContainer {
   private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY(), eleLeft.get() && eleRight.get()), elevatorSubsystem);
   //private final Command m_eleLimiter = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY()), elevatorSubsystem);
 
+  /******commands******/
+  private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
+  private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
+  private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
 
   private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
   private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
   private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
+  private final Command m_holdAngle = Commands.run(() ->coralSubsystem.holdAngle(true), coralSubsystem);
+  private final Command m_agarreAngle = Commands.run(() ->coralSubsystem.holdAngle(false), coralSubsystem);
 
   private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
@@ -106,7 +110,9 @@ public class RobotContainer {
   private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
   private final Command m_eleDownCount = Commands.runOnce(elevatorSubsystem::downCount, elevatorSubsystem);
   private final Command m_eleManual = Commands.run(() ->elevatorSubsystem.setIsManual(true), elevatorSubsystem);
-  private final Command m_elePID = Commands.run(() ->elevatorSubsystem.setIsManual(false), elevatorSubsystem);
+ 
+ //elePID behavior moved to subsystem count methods
+  //private final Command m_elePID = Commands.run(() ->elevatorSubsystem.setIsManual(false), elevatorSubsystem);
 
 
   //private final Command m_eleNoDown = Commands.runOnce(elevatorSubsystem::eleNoDown, elevatorSubsystem);
@@ -211,10 +217,11 @@ public class RobotContainer {
 
     m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
     m_manipController.rightTrigger().whileTrue(m_coralOut).onFalse(m_coralStop);
-
     
     m_manipController.y().whileTrue(m_upAngle).onFalse(m_stopAngle);
     m_manipController.x().whileTrue(m_downAngle).onFalse(m_stopAngle);
+    m_manipController.a().onTrue(m_holdAngle);
+    m_manipController.b().onTrue(m_agarreAngle);
 
     m_manipController.leftBumper().whileTrue(m_startIntake).onFalse(m_stopIntake);
     m_manipController.leftTrigger().whileTrue(m_reverseIntake).onFalse(m_stopIntake);
@@ -222,7 +229,10 @@ public class RobotContainer {
 
     /*****Trigger Assign*****/
     //AngleLimit.whileTrue(m_algaeLimiter);
-    
+    //eleHigh.onTrue(m_eleUpCount);
+    //eleLow.onTrue(m_eleDownCount);
+    m_manipController.start().onTrue(m_eleManual);
+
     EleRight.or(EleLeft).whileTrue(m_eleReset);
 
 
@@ -238,6 +248,7 @@ public class RobotContainer {
 
 
     NamedCommands.registerCommand("Shoot Coral", m_coralOut);
+    NamedCommands.registerCommand("Stop Coral", m_coralStop);
     NamedCommands.registerCommand("Load Coral", m_coralIn);
 
 
