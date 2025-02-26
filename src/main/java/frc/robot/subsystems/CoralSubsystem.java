@@ -16,12 +16,12 @@ public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
   //two motors one axis, one intake/deposit
   //SuckerFeeder
-    private final double kDriveTick2Degrees = 42 / 360 / 100;
+    private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)
 
   final double kP = 0.4;
-  final double kI = 0.01;
+  final double kI = 0.0;
   final double iLimit = 1;
-  final double kD = 0.02;
+  final double kD = 0.0;
 
   double setpoint = 0;
   double errorSum = 0;
@@ -107,8 +107,9 @@ public class CoralSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if(holdAngle) {
+    /*if(holdAngle) {
       angleToPoint();
-    }
+    }*/
+    SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
   }
 }

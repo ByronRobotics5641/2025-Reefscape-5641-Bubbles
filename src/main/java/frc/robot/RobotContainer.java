@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
 //import com.ctre.phoenix6.swerve.SwerveDrivetrain.OdometryThread;
+import com.fasterxml.jackson.databind.util.Named;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -101,10 +103,16 @@ public class RobotContainer {
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
   private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
 
+  private final Command m_algaeUp = Commands.runOnce(algaeSubsystem::algaeUp, algaeSubsystem);
+  private final Command m_algaeDown = Commands.runOnce(algaeSubsystem::algaeDown, algaeSubsystem);
+  private final Command m_algaeStop = Commands.runOnce(algaeSubsystem::algaeStop, algaeSubsystem);
+
   private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
   private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
   private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
   private final Command m_eleReset = Commands.runOnce(elevatorSubsystem::eleReset, elevatorSubsystem);
+  private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
+  private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
 
   //for elevator PID
   private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
@@ -148,12 +156,12 @@ public class RobotContainer {
             .withVelocityY(0.2 * Math.pow((-joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
             .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(4) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
         ));
-       joystick.rightBumper().whileFalse( // Drivetrain will execute this command periodically
+       /*joystick.rightBumper().whileFalse( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((-joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
             .withVelocityY(0.2 * Math.pow((-joystick.getRawAxis(0)* Constants.MaxSpeed),3))  // Drive left with negative X (left)
             .withRotationalRate(0.2*Math.pow((-joystick.getRawAxis(4) * Constants.MaxAngularRate),3)) // Drive counterclockwise with negative X (left)
-        ));  
+        ));*/  
         joystick.rightBumper().whileTrue( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(0.2 * Math.pow((turtleSpeed*-joystick.getRawAxis(1) * Constants.MaxSpeed),3)) // Drive forward with
                                                                                                                                                                                                 // negative Y (forward)
@@ -229,11 +237,11 @@ public class RobotContainer {
 
     /*****Trigger Assign*****/
     //AngleLimit.whileTrue(m_algaeLimiter);
-    //eleHigh.onTrue(m_eleUpCount);
-    //eleLow.onTrue(m_eleDownCount);
+    eleHigh.onTrue(m_eleUpCount);
+    eleLow.onTrue(m_eleDownCount);
     m_manipController.start().onTrue(m_eleManual);
 
-    EleRight.or(EleLeft).whileTrue(m_eleReset);
+    EleRight.or(EleLeft).onTrue(m_eleReset);
 
 
     if (Utils.isSimulation()) {
@@ -241,7 +249,7 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
-
+    CameraServer.startAutomaticCapture(0);
   }
 
   public RobotContainer() {
@@ -251,6 +259,21 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Coral", m_coralStop);
     NamedCommands.registerCommand("Load Coral", m_coralIn);
 
+    NamedCommands.registerCommand("Coral Angle Up", m_upAngle);
+    NamedCommands.registerCommand("Coral Angle Down", m_downAngle);
+    NamedCommands.registerCommand("Coral Angle Stop", m_stopAngle);
+
+    NamedCommands.registerCommand("Algae Intake", m_startIntake);
+    NamedCommands.registerCommand("Algae Out", m_reverseIntake);
+    NamedCommands.registerCommand("Algae Stop", m_stopIntake);
+
+    NamedCommands.registerCommand("Algae Angle Up", m_algaeUp);
+    NamedCommands.registerCommand("Algae Angle Down", m_algaeDown);
+    NamedCommands.registerCommand("Algae Angle Stop", m_algaeStop);
+
+    NamedCommands.registerCommand("Ele Up", m_eleLift);
+    NamedCommands.registerCommand("Ele Down", m_eleDown);
+    NamedCommands.registerCommand("Ele Stop", m_eleStop);
 
     pathChooser = AutoBuilder.buildAutoChooser();
 

@@ -20,17 +20,32 @@ public class AlgaeSubsystem extends SubsystemBase {
   /** Creates a new AlgaeSubsystem. */
   //has two motors one rotation, one intake/deposit
   //BottomFeeder
-  public AlgaeSubsystem() {}
+  private final double kDriveTick2Degrees = 42 / 360 / 100;
+
+
     SparkMax arm = new SparkMax(7, MotorType.kBrushless);
     SparkFlex intake = new SparkFlex(2, MotorType.kBrushless);
+    RelativeEncoder encoder;
 
+    public AlgaeSubsystem() {
+      encoder = arm.getEncoder();
+      encoder.setPosition(0);
+  
+    }
 
     public void algaeDriver(double speed) {
       intake.set(speed);
     }
 
-    
-
+    public void algaeUp() {
+      arm.set(-.5);
+    }
+    public void algaeDown() {
+      arm.set(-.5);
+    }
+    public void algaeStop() {
+      arm.set(0);
+    }
 
     public void startIntake() {
       intake.set(1);
@@ -51,6 +66,7 @@ public class AlgaeSubsystem extends SubsystemBase {
       }
     }
 
+    
 
     /*****Not needed if algaeAngle takes stick value
      
@@ -67,5 +83,8 @@ public class AlgaeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //SmartDashboard.getNumber("Algae Encoder", encoder.getPosition() * kDriveTick2Degrees);
+
+    SmartDashboard.putNumber("Algae Encoder", encoder.getPosition() * kDriveTick2Degrees);
   }
 }
