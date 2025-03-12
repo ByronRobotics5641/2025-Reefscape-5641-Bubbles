@@ -6,11 +6,14 @@
     "3 Coral Auto",
     "Back Auto",
     "Front Auto",
+    "Leave Auto",
     "Right Far Auto",
-    "Right Near Auto"
+    "Right Near Auto",
+    "Test Auto"
   ],
   "autoFolders": [
-    "2025 ReefScape"
+    "2025 ReefScape",
+    "Test Folder"
   ],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 4.724,

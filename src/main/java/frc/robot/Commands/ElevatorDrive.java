@@ -19,6 +19,7 @@ public class ElevatorDrive extends Command {
   DoubleSupplier speedSupplier;
   double speed;
   boolean noDown = false;
+  boolean isManual = false;
 
   public ElevatorDrive(ElevatorSubsystem elevator, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -36,19 +37,19 @@ public class ElevatorDrive extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.eleDriver(speed, noDown);
+    elevator.eleDriver(speed, !noDown, isManual);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.eleDriver(speed, noDown);
+    elevator.eleDriver(speed, !noDown, isManual);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.eleDriver(0,noDown);
+    elevator.eleDriver(0, !noDown, isManual);
   }
   // Returns true when the command should end.
   @Override

@@ -16,6 +16,9 @@ public class CoralAxis extends Command {
   DoubleSupplier speedSupplier;
   double speed;
 
+  boolean noUp;
+  boolean cManual;
+
   //this constructor handles double input. great for auton... if we aren't using PID
   public CoralAxis(CoralSubsystem cAngle, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,19 +38,19 @@ public class CoralAxis extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    cAngle.angleDriver(speed);
+    cAngle.angleDriver(speed, noUp, cManual);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    cAngle.angleDriver(speed);
+    cAngle.angleDriver(speed, noUp, cManual);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    cAngle.angleDriver(0);
+    cAngle.angleDriver(0, noUp, cManual);
   }
 
   // Returns true when the command should end.

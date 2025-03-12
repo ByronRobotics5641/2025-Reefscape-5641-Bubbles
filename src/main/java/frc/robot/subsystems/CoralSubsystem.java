@@ -18,17 +18,20 @@ public class CoralSubsystem extends SubsystemBase {
   //SuckerFeeder
     private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)
 
-  final double kP = 0.4;
+  final double kP = 0.02;
   final double kI = 0.0;
   final double iLimit = 1;
-  final double kD = 0.0;
+  final double kD = 0.065;
 
   double setpoint = 0;
   double errorSum = 0;
   double lastTimestamp = 0;
   double lastError = 0;
 
-  boolean holdAngle = false;
+  int count;
+
+  boolean cManual = false;
+  boolean noUp;
 
   SparkMax rotate = new SparkMax(3, MotorType.kBrushless);
   SparkMax coral = new SparkMax(4, MotorType.kBrushless);
@@ -46,14 +49,38 @@ public class CoralSubsystem extends SubsystemBase {
 
   }
  
+  public void setCManual(boolean cManual) {
+    System.out.println("Setting isManual to: " + cManual);  // Debugging line
+    this.cManual = cManual;
+  }
 
   public void coralDriver(double speed) {
     coral.set(speed);
   }
-  public void angleDriver(double speed) {
+  public void angleDriver(double speed, boolean noUp, boolean cManual) {
     rotate.set(speed);
+
+    this.noUp = noUp;
+    if (cManual)
+    {
+      System.out.println("isManual");
+      if(noUp && speed < 0) {
+        rotate.set(speed * 0.6);
+      }
+      else if(!cManual) {
+        rotate.set(speed * 0.6);
+      }
+      else{
+        rotate.set(speed * 0.6);
+      }
+    }
+     else {
+      setSetpoint();
+      angleToPoint();
+    }
   }
 
+  /*Coral Angle Without PID*/
   public void downAngle() {
     rotate.set(.3);
   }
@@ -62,6 +89,15 @@ public class CoralSubsystem extends SubsystemBase {
   }
   public void stopAngle() {
     rotate.set(0);
+  }
+
+  public void setSetpoint(int setpoint) {
+    this.count = setpoint;
+  }
+
+  public void angleReset() {
+    encoder.setPosition(0);
+    setSetpoint(0);
   }
 
   public void coralIn() {
@@ -74,15 +110,40 @@ public class CoralSubsystem extends SubsystemBase {
     coral.set(0);
   }
 
-  public void holdAngle(boolean holdAngle) {
-    this.holdAngle = holdAngle;
+  public void arribaCount() {
+    if(count <= 3) {
+      count++;
+    }
+    else {
+      count = 0;
+    }
+  }
+  public void bajarCount() {
+ 
+    if(count >= 0) {
+      count--;
+    }
+    else {
+      count = 3;
+    }
   }
 
-  /*public void setSetpoint(){
-    this.setpoint = setpoint;
-    this.setpoint = 0;
+  public void setSetpoint(){
+    if(count == 1) {
+      this.setpoint = 50;
+    }
+    else if(count == 2) {
+      this.setpoint = 117;
+    }
+    else if(count == 3) {
+      this.setpoint = 95;
+    }
+    else {
+      this.setpoint = 0;
+    }
     //encoder.setPosition(0); resets position... not useful for our subsystems as described
-  }*/
+  }
+
   public void angleToPoint(){
 
     double sensorPosition = encoder.getPosition() * kDriveTick2Degrees;
@@ -101,7 +162,7 @@ public class CoralSubsystem extends SubsystemBase {
 
     double outputSpeed = kP * error + kI * errorSum + kD * errorRate;
 
-    rotate.set(outputSpeed);
+    rotate.set(outputSpeed * .7);
 
   }
   @Override
