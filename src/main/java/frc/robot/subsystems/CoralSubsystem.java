@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,6 +17,9 @@ public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
   //two motors one axis, one intake/deposit
   //SuckerFeeder
+
+  DigitalInput coralDetect = new DigitalInput(3);
+
     private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)
 
   final double kP = 0.02;
@@ -128,6 +132,14 @@ public class CoralSubsystem extends SubsystemBase {
     }
   }
 
+  public void driveCoral() {
+    this.setpoint = 0;
+  }
+
+  public void zeroCoral() {
+    this.setpoint = 0;
+  }
+
   public void setSetpoint(){
     if(count == 1) {
       this.setpoint = 50;
@@ -172,5 +184,6 @@ public class CoralSubsystem extends SubsystemBase {
       angleToPoint();
     }*/
     SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
+    SmartDashboard.putBoolean("Coral Sensor", coralDetect.get());
   }
 }

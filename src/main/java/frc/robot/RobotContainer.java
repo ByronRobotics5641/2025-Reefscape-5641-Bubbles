@@ -83,6 +83,7 @@ public class RobotContainer {
   DigitalInput noUp = new DigitalInput(1);
   Trigger NoUp = new Trigger(noUp::get);
 
+
   Trigger manipCoralIn = new JoystickButton(manip, 3);
   Trigger manipCoralOut = new JoystickButton(manip, 5);
 
@@ -121,12 +122,13 @@ public class RobotContainer {
   private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
 
+  private final Command m_driveCoral = Commands.runOnce(coralSubsystem::driveCoral, coralSubsystem);
+  private final Command m_zeroCoral = Commands.runOnce(coralSubsystem::zeroCoral, coralSubsystem);
+
   private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
   private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
   private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
   private final Command m_angleReset = Commands.runOnce(coralSubsystem::angleReset, coralSubsystem);
-
-  
 
   private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
@@ -142,6 +144,9 @@ public class RobotContainer {
   private final Command m_eleReset = Commands.runOnce(elevatorSubsystem::eleReset, elevatorSubsystem);
   private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
   private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
+
+  private final Command m_drivePID = Commands.runOnce(elevatorSubsystem::drivePID, elevatorSubsystem);
+  private final Command m_zeroPID = Commands.runOnce(elevatorSubsystem::zeroPID, elevatorSubsystem);
 
   //for elevator PID
   private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
@@ -212,8 +217,11 @@ public class RobotContainer {
 
     //joystick.button(3).whileTrue(limelightAlign);
 
-    joystick.leftTrigger().whileTrue(m_eleLeft);
-    joystick.rightTrigger().whileTrue(m_eleRight);
+    joystick.leftTrigger().onTrue(m_driveCoral);
+    joystick.leftTrigger().onTrue(m_drivePID);
+
+    joystick.rightTrigger().onTrue(m_zeroPID);
+    joystick.leftTrigger().onTrue(m_zeroCoral);
 //*/ 
 
 
@@ -278,6 +286,9 @@ public class RobotContainer {
     coralUp.onTrue(m_arribaCount);
     coralDown.onTrue(m_bajarCount);
 
+    //coralDetect.whileTrue();
+
+    
     m_manipController.start().whileFalse(m_elePID);
 
     EleLeft.onTrue(m_eleReset);//*/

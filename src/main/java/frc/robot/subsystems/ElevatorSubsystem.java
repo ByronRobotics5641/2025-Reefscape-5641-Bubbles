@@ -148,10 +148,20 @@ public class ElevatorSubsystem extends SubsystemBase {
       count = 3;
     }
   }
+
+  public void zeroPID() {
+    this.setpoint = 0;
+  }
+  
+  public void drivePID() {
+    this.setpoint = 0;
+    System.out.println("Algae Extract");
+  }
+
   public void setSetpoint() {
     //setIsManual(false);
     if(count == 1) {
-      this.setpoint = -77;
+      this.setpoint = -97.5;
       System.out.println("Coral Intake");
     }
     /*else if(count == 2) {
@@ -168,7 +178,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     else {
       this.setpoint = 0;
-      System.out.println("Resting and L1");
+      System.out.println("Resting");
     }
     //encoder.setPosition(0); resets position
   }
