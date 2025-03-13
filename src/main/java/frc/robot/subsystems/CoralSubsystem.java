@@ -132,7 +132,10 @@ public class CoralSubsystem extends SubsystemBase {
     }
   }
 
-  public void driveCoral() {
+  public void driveUpAngle() {
+    this.setpoint = 0;
+  }
+  public void driveDownAngle() {
     this.setpoint = 0;
   }
 

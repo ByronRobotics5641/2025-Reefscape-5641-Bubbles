@@ -122,12 +122,13 @@ public class RobotContainer {
   private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
 
-  private final Command m_driveCoral = Commands.runOnce(coralSubsystem::driveCoral, coralSubsystem);
+  private final Command m_driveUpAngle = Commands.runOnce(coralSubsystem::driveUpAngle, coralSubsystem);
+  private final Command m_driveDownAngle = Commands.runOnce(coralSubsystem::driveDownAngle, coralSubsystem);
   private final Command m_zeroCoral = Commands.runOnce(coralSubsystem::zeroCoral, coralSubsystem);
 
-  private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
-  private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
-  private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
+  //private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
+  //private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
+  //private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
   private final Command m_angleReset = Commands.runOnce(coralSubsystem::angleReset, coralSubsystem);
 
   private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
@@ -139,8 +140,8 @@ public class RobotContainer {
   private final Command m_algaeStop = Commands.runOnce(algaeSubsystem::algaeStop, algaeSubsystem);
 
   private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
-  private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
-  private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
+  //private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
+  //private final Command m_eleLeft = Commands.runOnce(elevatorSubsystem::eleLeft, elevatorSubsystem);
   private final Command m_eleReset = Commands.runOnce(elevatorSubsystem::eleReset, elevatorSubsystem);
   private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
   private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
@@ -217,11 +218,14 @@ public class RobotContainer {
 
     //joystick.button(3).whileTrue(limelightAlign);
 
-    joystick.leftTrigger().onTrue(m_driveCoral);
+    joystick.leftTrigger().onTrue(m_driveUpAngle);
     joystick.leftTrigger().onTrue(m_drivePID);
 
-    joystick.rightTrigger().onTrue(m_zeroPID);
-    joystick.leftTrigger().onTrue(m_zeroCoral);
+    joystick.rightTrigger().onTrue(m_driveDownAngle);
+    joystick.rightTrigger().onTrue(m_drivePID);
+
+    joystick.leftBumper().onTrue(m_zeroPID);
+    joystick.leftBumper().onTrue(m_zeroCoral);
 //*/ 
 
 
