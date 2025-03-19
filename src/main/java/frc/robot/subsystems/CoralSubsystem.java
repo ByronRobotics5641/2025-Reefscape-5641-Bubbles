@@ -5,10 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,9 +20,14 @@ public class CoralSubsystem extends SubsystemBase {
   //two motors one axis, one intake/deposit
   //SuckerFeeder
 
+  /////////////
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;//use I2C port of RIO
+  private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);//v3 color sensor
+  /////////////
+  
   DigitalInput coralDetect = new DigitalInput(3);
 
-    private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)
+  private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)
 
   final double kP = 0.02;
   final double kI = 0.0;
@@ -52,6 +59,18 @@ public class CoralSubsystem extends SubsystemBase {
     lastTimestamp = Timer.getFPGATimestamp();
 
   }
+
+  //treat proximity like limit switch
+  public boolean checkCoral(){
+    //use value when nothing is in SF
+    if (colorSensor.getProximity() == 2047){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
  
   public void setCManual(boolean cManual) {
     System.out.println("Setting isManual to: " + cManual);  // Debugging line
@@ -59,7 +78,12 @@ public class CoralSubsystem extends SubsystemBase {
   }
 
   public void coralDriver(double speed) {
-    coral.set(speed);
+    if(checkCoral() && speed < 0) {
+      coral.set(0);
+    }
+    else {
+      coral.set(speed);
+    }
   }
   public void angleDriver(double speed, boolean noUp, boolean cManual) {
     rotate.set(speed);
@@ -69,10 +93,7 @@ public class CoralSubsystem extends SubsystemBase {
     {
       System.out.println("isManual");
       if(noUp && speed < 0) {
-        rotate.set(speed * 0.6);
-      }
-      else if(!cManual) {
-        rotate.set(speed * 0.6);
+        rotate.set(speed * 0);
       }
       else{
         rotate.set(speed * 0.6);
@@ -108,14 +129,19 @@ public class CoralSubsystem extends SubsystemBase {
     coral.set(1);
   }
   public void coralOut() {
-    coral.set(-1);
+    if(checkCoral()) {
+      coral.set(0);
+    }
+    else {
+      coral.set(-1);
+    }
   }
   public void coralStop() {
     coral.set(0);
   }
 
   public void arribaCount() {
-    if(count <= 3) {
+    if(count <= 5) {
       count++;
     }
     else {
@@ -124,11 +150,11 @@ public class CoralSubsystem extends SubsystemBase {
   }
   public void bajarCount() {
  
-    if(count >= 0) {
+    if(count > 0) {
       count--;
     }
     else {
-      count = 3;
+      count = 6;
     }
   }
 
@@ -141,20 +167,64 @@ public class CoralSubsystem extends SubsystemBase {
 
   public void zeroCoral() {
     this.setpoint = 0;
+    count = 0;
   }
 
+  /****Buttons****/
+  public void manip1() {
+    count = 1;
+  }
+  public void manip2() {
+    count = 2;
+  }
+  public void manip3() {
+    count = 3;
+  }
+  public void manip4() {
+    count = 4;
+  }
+  public void manip5() {
+    count = 5;
+  }
+  public void manip6() {
+    count = 6;
+  }
+  
+  
   public void setSetpoint(){
-    if(count == 1) {
-      this.setpoint = 50;
+    if(count == 1) { //L1
+      this.setpoint = 80;
+     // System.out.println("Coral L1");
+
     }
-    else if(count == 2) {
+    else if(count == 2) { //L2
       this.setpoint = 117;
+    //  System.out.println("Coral L2");
+
     }
-    else if(count == 3) {
-      this.setpoint = 95;
+    else if(count == 3) { //L3
+      this.setpoint = 91;
+      System.out.println("Coral L3");
+
+    }
+    else if(count == 4) { //Coral Intake
+      this.setpoint = 62;
+     // System.out.println("Coral Coral Intake");
+
+    }
+    else if(count == 5) { //Algae L2
+      this.setpoint = 65;
+      //System.out.println("Coral Algae L2");
+
+    }
+    else if(count == 6) { //Algae L3
+      this.setpoint = 65;
+      //System.out.println("Coral Algae L3");
+
     }
     else {
       this.setpoint = 0;
+      
     }
     //encoder.setPosition(0); resets position... not useful for our subsystems as described
   }
@@ -186,7 +256,11 @@ public class CoralSubsystem extends SubsystemBase {
     /*if(holdAngle) {
       angleToPoint();
     }*/
+
+    System.out.println("SF Count: "+ count);
+
     SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
-    SmartDashboard.putBoolean("Coral Sensor", coralDetect.get());
+    SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());
+    SmartDashboard.putBoolean("colorboolean", checkCoral());
   }
 }

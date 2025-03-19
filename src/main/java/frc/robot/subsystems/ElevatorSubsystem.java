@@ -23,7 +23,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   boolean isManual = false;//start without PID... change in Elevator PID commands, call setIsManual(false)
 
-  final double kP = 0.25;
+  final double kP = .25;
   final double kI = 0;
   final double iLimit = 1;
   final double kD = 0.2;
@@ -71,20 +71,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.noDown = noDown;
     if (isManual)
     {
-      System.out.println("isManual");
+      //System.out.println("isManual");
       if(!noDown && speed > 0) {
         lead.set(0);
         follow.set(0);
       }
-      else if(speed < 0 && encoder.getPosition() <= -330) {
-        lead.set(0);
-        follow.set(0);
-      }
-      /*else if(speed > 0 && encoder.getPosition() > -20) {
-        lead.set(0);
-        follow.set(0);
-      }*/
-      else if(!isManual) {
+      else if(speed < 0 && encoder.getPosition() <= -345) {
         lead.set(0);
         follow.set(0);
       }
@@ -131,7 +123,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
   public void upCount() {
     //setIsManual(false);
-    if(count <= 2) {
+    if(count <= 5) {
       count++;
     }
     else {
@@ -145,43 +137,76 @@ public class ElevatorSubsystem extends SubsystemBase {
       count--;
     }
     else {
-      count = 3;
+      count = 6;
     }
   }
 
   public void zeroPID() {
     this.setpoint = 0;
+    count = 0;
   }
+
+  /****Buttons****/
+  public void Emanip1() {
+    count = 1;
+  }
+  public void Emanip2() {
+    count = 2;
+  }
+  public void Emanip3() {
+    count = 3;
+  }
+  public void Emanip4() {
+    count = 4;
+  }
+  public void Emanip5() {
+    count = 5;
+  }
+  public void Emanip6() {
+    count = 6;
+  }
+  
   
   public void drivePID() {
     this.setpoint = 0;
-    System.out.println("Algae Extract");
+    //System.out.println("Algae Extract");
   }
 
   public void setSetpoint() {
     //setIsManual(false);
     if(count == 1) {
-      this.setpoint = -97.5;
-      System.out.println("Coral Intake");
+      this.setpoint = 0;
+      //System.out.println("Elevator L1");
     }
-    /*else if(count == 2) {
-      this.setpoint = -74;
-      System.out.println("Algae Extract");
-    }*/
     else if(count == 2) {
-      this.setpoint = -250;
-      System.out.println("L2");
+      this.setpoint = -224;
+      //System.out.println("Elevator L2");
     }
     else if(count == 3) {
-      this.setpoint = -326;
-      System.out.println("L3");
+
+      this.setpoint = -339;
+      //System.out.println("Elevator L3");
+    }
+    else if(count == 4) {
+
+      this.setpoint = -109;
+      //System.out.println("Elevator Coral Intake");
+    }
+    else if(count == 5) {
+      this.setpoint = -127;
+      //System.out.println("Elevator Algae L2");
+    }
+    else if(count == 6) {
+      this.setpoint = -335;
+      //System.out.println("Elevator Algae L3");
     }
     else {
       this.setpoint = 0;
-      System.out.println("Resting");
+      //System.out.println("Elevator Resting");
     }
-    //encoder.setPosition(0); resets position
   }
+    //encoder.setPosition(0); resets position
+  
 
   public void setSetpoint(int setpoint) {
     this.count = setpoint;
@@ -193,7 +218,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.getNumber("position", sensorPosition);
     
 
-    if (sensorPosition < -330 && kP > 0) { // Assuming kP is positive when going up
+    if (sensorPosition < -345 && kP > 0) { // Assuming kP is positive when going up
 
       lead.set(0);
       follow.set(0);
@@ -235,7 +260,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       heightToPoint();
     }*/
 
-      System.out.println(count);
+      //System.out.println("Elevator Count: "+count);
+
       //System.out.println(outPutSpeed);
       SmartDashboard.putBoolean("Ele Limit", !noDown);
       SmartDashboard.putNumber("Elevator Encoder", encoder.getPosition());  

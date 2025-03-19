@@ -27,21 +27,28 @@ public class AlgaeSubsystem extends SubsystemBase {
     SparkFlex intake = new SparkFlex(2, MotorType.kBrushless);
     RelativeEncoder encoder;
 
+    boolean angleLimit;
+
     public AlgaeSubsystem() {
       encoder = arm.getEncoder();
       encoder.setPosition(0);
   
     }
 
-    public void algaeDriver(double speed) {
-      intake.set(speed);
+    public void algaeDriver(double speed, boolean angleLimit) {
+      if(angleLimit && speed < 0) {
+        arm.set(0);
+      }
+      else {
+        arm.set(.5);
+      }
     }
 
     public void algaeUp() {
       arm.set(-.5);
     }
     public void algaeDown() {
-      arm.set(-.5);
+      arm.set(.5);
     }
     public void algaeStop() {
       arm.set(0);

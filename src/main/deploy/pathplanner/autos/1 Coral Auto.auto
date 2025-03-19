@@ -5,27 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Seg 1 NearR"
+            "name": "Shoot Coral"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Seg 2 NearR"
+            "name": "Stop Coral"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "2025 ReefScape",
+  "folder": null,
   "choreoAuto": false
 }

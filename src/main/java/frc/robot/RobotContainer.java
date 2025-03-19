@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 //import com.ctre.phoenix6.swerve.SwerveDrivetrain.OdometryThread;
 import com.fasterxml.jackson.databind.util.Named;
 
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,6 +41,7 @@ import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.TestAuto;
 //import frc.robot.Commands.AlgaeDriver;
@@ -65,6 +68,7 @@ public class RobotContainer {
   private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final LightsSubsystem lightsSubsystem = new LightsSubsystem();
 
   /********speed limit variables****/
   double driveSpeed = .6;
@@ -73,6 +77,8 @@ public class RobotContainer {
   /*****Triggers*****/
   DigitalInput angleLimit = new DigitalInput(0);
   Trigger AngleLimit = new Trigger(angleLimit::get);
+
+ // Trigger checkcoralTrigger = new Trigger(coralSubsystem::checkCoral);
 
   /*DigitalInput eleRight = new DigitalInput(1);
   Trigger EleRight = new Trigger(eleRight::get);*/
@@ -93,8 +99,16 @@ public class RobotContainer {
   Trigger manipManualEle = new JoystickButton(manip, 2);
   Trigger manipManualCoral = new JoystickButton(manip, 1);
 
-  Trigger manipAlgaeUp = new JoystickButton(manip, 12);
-  Trigger manipAlgaeDown = new JoystickButton(manip, 11);
+  //Trigger manipAlgaeUp = new JoystickButton(manip, 12);
+  //Trigger manipAlgaeDown = new JoystickButton(manip, 11);
+
+  Trigger l1 = new JoystickButton(manip, 11);
+  Trigger l2 = new JoystickButton(manip, 9);
+  Trigger l3 = new JoystickButton(manip, 7);
+  Trigger coralIntake = new JoystickButton(manip, 12);
+  Trigger algaeL2 = new JoystickButton(manip, 10);
+  Trigger algaeL3 = new JoystickButton(manip, 8);
+
 
 
 
@@ -110,14 +124,17 @@ public class RobotContainer {
 
   //from Commands folder/package------------------------>>subsystem------->>controller input
   //private final AlgaeDriver m_algaeAngle = new AlgaeDriver(algaeSubsystem, m_manipController.getRightY()); //check with control layout
-  private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRightY(), 0.2), angleLimit.get()), algaeSubsystem);
+  private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.3), angleLimit.get()), algaeSubsystem);
   //private final Command m_algaeLimiter = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(-Math.abs(m_manipController.getRightY()), 0.2), angleLimit.get()), algaeSubsystem);
 
-  private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(MathUtil.applyDeadband(m_manipController.getLeftY(), 0.2), eleLeft.get(), m_manipController.start().getAsBoolean() || manipManualEle.getAsBoolean()), elevatorSubsystem);
-  private final Command m_angleDriver = Commands.run(() ->coralSubsystem.angleDriver(MathUtil.applyDeadband(m_manipController.getLeftY(), 0.2),noUp.get(), m_manipController.back().getAsBoolean() || manipManualCoral.getAsBoolean()), coralSubsystem);
+
+  private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.2), eleLeft.get(), m_manipController.start().getAsBoolean() || manipManualEle.getAsBoolean()), elevatorSubsystem);
+  private final Command m_angleDriver = Commands.run(() ->coralSubsystem.angleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.2),noUp.get(), m_manipController.back().getAsBoolean() || manipManualCoral.getAsBoolean()), coralSubsystem);
   //private final Command m_eleLimiter = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY()), elevatorSubsystem);
 
   /******commands******/
+ // private final Command m_colors = Commands.runOnce(lightsSubsystem::setAllianceColor, lightsSubsystem);
+
   private final Command m_coralIn = Commands.runOnce(coralSubsystem::coralIn, coralSubsystem);
   private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
@@ -130,6 +147,21 @@ public class RobotContainer {
   //private final Command m_upAngle = Commands.runOnce(coralSubsystem::upAngle, coralSubsystem);
   //private final Command m_stopAngle = Commands.runOnce(coralSubsystem::stopAngle, coralSubsystem);
   private final Command m_angleReset = Commands.runOnce(coralSubsystem::angleReset, coralSubsystem);
+
+  private final Command m_manip1 = Commands.runOnce(coralSubsystem::manip1, coralSubsystem);
+  private final Command m_manip2 = Commands.runOnce(coralSubsystem::manip2, coralSubsystem);
+  private final Command m_manip3 = Commands.runOnce(coralSubsystem::manip3, coralSubsystem);
+  private final Command m_manip4 = Commands.runOnce(coralSubsystem::manip4, coralSubsystem);
+  private final Command m_manip5 = Commands.runOnce(coralSubsystem::manip5, coralSubsystem);
+  private final Command m_manip6 = Commands.runOnce(coralSubsystem::manip6, coralSubsystem);
+
+  private final Command m_Emanip1 = Commands.runOnce(elevatorSubsystem::Emanip1, coralSubsystem);
+  private final Command m_Emanip2 = Commands.runOnce(elevatorSubsystem::Emanip2, coralSubsystem);
+  private final Command m_Emanip3 = Commands.runOnce(elevatorSubsystem::Emanip3, coralSubsystem);
+  private final Command m_Emanip4 = Commands.runOnce(elevatorSubsystem::Emanip4, coralSubsystem);
+  private final Command m_Emanip5 = Commands.runOnce(elevatorSubsystem::Emanip5, coralSubsystem);
+  private final Command m_Emanip6 = Commands.runOnce(elevatorSubsystem::Emanip6, coralSubsystem);
+
 
   private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
@@ -160,6 +192,9 @@ public class RobotContainer {
   private final Command m_coralManual = Commands.run(() ->coralSubsystem.setCManual(true), coralSubsystem);
   private final Command m_coralPID = Commands.run(() ->coralSubsystem.setCManual(false), coralSubsystem);
  
+ // private final Command m_setalliancecolor = Commands.runOnce(lightsSubsystem::setAllianceColor,lightsSubsystem);
+  //private final Command m_defaultcolor = Commands.runOnce(lightsSubsystem::defaultColor,lightsSubsystem);
+
  //elePID behavior moved to subsystem count methods
   //private final Command m_elePID = Commands.run(() ->elevatorSubsystem.setIsManual(false), elevatorSubsystem);
 
@@ -218,14 +253,14 @@ public class RobotContainer {
 
     //joystick.button(3).whileTrue(limelightAlign);
 
-    joystick.leftTrigger().onTrue(m_driveUpAngle);
+    /*joystick.leftTrigger().onTrue(m_driveUpAngle);
     joystick.leftTrigger().onTrue(m_drivePID);
 
     joystick.rightTrigger().onTrue(m_driveDownAngle);
-    joystick.rightTrigger().onTrue(m_drivePID);
+    joystick.rightTrigger().onTrue(m_drivePID);*/
 
-    joystick.leftBumper().onTrue(m_zeroPID);
-    joystick.leftBumper().onTrue(m_zeroCoral);
+    joystick.b().onTrue(m_zeroPID);
+    joystick.b().onTrue(m_zeroCoral);
 //*/ 
 
 
@@ -265,14 +300,14 @@ public class RobotContainer {
 
     /*****Assigning Stick Values*****/
     algaeSubsystem.setDefaultCommand(m_algaeAngle);// defaults to stick value, can be linked to a button or command trigger later
-
     elevatorSubsystem.setDefaultCommand(m_eleDriver);
     coralSubsystem.setDefaultCommand(m_angleDriver);
+   // lightsSubsystem.setDefaultCommand(m_colors);
     
     /*****Assigning Buttons*****/
 
     /***Manip Xbox***/
-    m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
+    /*m_manipController.rightBumper().whileTrue(m_coralIn).onFalse(m_coralStop);
     m_manipController.rightTrigger().whileTrue(m_coralOut).onFalse(m_coralStop);
     
     //m_manipController.y().and(NoUp.negate()).whileTrue(m_upAngle).onFalse(m_stopAngle);
@@ -284,22 +319,23 @@ public class RobotContainer {
     //m_manipController.b().onTrue(m_arribaCount);
     //m_manipController.a().onTrue(m_bajarCount);
 
-    /*****Trigger Assign*****/
-    eleHigh.onTrue(m_eleUpCount);
+    /*****Trigger Assign*****/ 
+    /*eleHigh.onTrue(m_eleUpCount);
     eleLow.onTrue(m_eleDownCount);
     coralUp.onTrue(m_arribaCount);
-    coralDown.onTrue(m_bajarCount);
+    coralDown.onTrue(m_bajarCount);*/
 
+    //checkcoralTrigger.whileTrue(m_setalliancecolor).whileFalse(m_defaultcolor);
     //coralDetect.whileTrue();
 
     
-    m_manipController.start().whileFalse(m_elePID);
+    //m_manipController.start().whileFalse(m_elePID);
 
     EleLeft.onTrue(m_eleReset);//*/
     NoUp.onTrue(m_angleReset);
 
     /***Manip Flight Stick***/
-    /*manipCoralIn.whileTrue(m_coralIn).onFalse(m_coralStop);
+    manipCoralIn.whileTrue(m_coralIn).onFalse(m_coralStop);
     manipCoralOut.whileTrue(m_coralOut).onFalse(m_coralStop);
 
     manipAlgaeIn.whileTrue(m_startIntake).onFalse(m_stopIntake);
@@ -308,9 +344,23 @@ public class RobotContainer {
     manipManualEle.onFalse(m_elePID);
     manipManualCoral.onFalse(m_coralPID);
 
-    manipAlgaeUp.whileTrue(m_algaeUp).onFalse(m_algaeStop);
-    manipAlgaeDown.whileTrue(m_algaeDown).onFalse(m_algaeStop);*/
+    //manipAlgaeUp.whileTrue(m_algaeUp).onFalse(m_algaeStop);
+    //manipAlgaeDown.whileTrue(m_algaeDown).onFalse(m_algaeStop);
 
+    
+    l1.onTrue(m_manip1);
+    l2.onTrue(m_manip2);
+    l3.onTrue(m_manip3);
+    coralIntake.onTrue(m_manip4);
+    algaeL2.onTrue(m_manip5);  
+    algaeL3.onTrue(m_manip6);
+
+    l1.onTrue(m_Emanip1);
+    l2.onTrue(m_Emanip2);
+    l3.onTrue(m_Emanip3);
+    coralIntake.onTrue(m_Emanip4);
+    algaeL2.onTrue(m_Emanip5);  
+    algaeL3.onTrue(m_Emanip6);
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -332,6 +382,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Coral Angle Down", m_downAngle);
     NamedCommands.registerCommand("Coral Angle Stop", m_stopAngle);*/
 
+    NamedCommands.registerCommand("Zero 1", m_zeroCoral);
+    NamedCommands.registerCommand("Zero 2", m_zeroPID);
+
     NamedCommands.registerCommand("Algae Intake", m_startIntake);
     NamedCommands.registerCommand("Algae Out", m_reverseIntake);
     NamedCommands.registerCommand("Algae Stop", m_stopIntake);
@@ -344,12 +397,29 @@ public class RobotContainer {
     NamedCommands.registerCommand("Ele Down", m_eleDown);
     NamedCommands.registerCommand("Ele Stop", m_eleStop);
 
+    NamedCommands.registerCommand("L1", new InstantCommand(() -> coralSubsystem.manip1()));
+    NamedCommands.registerCommand("L2", new InstantCommand(() -> coralSubsystem.manip2()));
+    NamedCommands.registerCommand("L3", new InstantCommand(() -> coralSubsystem.manip3()));
+    NamedCommands.registerCommand("Coral", m_manip4);
+    NamedCommands.registerCommand("Algae L2", m_manip5);
+    NamedCommands.registerCommand("Algae L3", m_manip6);
+
+    NamedCommands.registerCommand("EL1", m_Emanip1);
+    NamedCommands.registerCommand("EL2", new InstantCommand(() -> elevatorSubsystem.Emanip2()));
+    NamedCommands.registerCommand("EL3", m_Emanip3);
+    NamedCommands.registerCommand("ECoral", m_Emanip4);
+    NamedCommands.registerCommand("EAlgae L2", m_Emanip5);
+    NamedCommands.registerCommand("EAlgae L3", m_Emanip6);
+
+
+
+
     pathChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("path Chooser", pathChooser);
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
-
+   // SmartDashboard.putBoolean("check Coral Trigger", checkcoralTrigger.getAsBoolean());
     
 
     //autoChooser = new SendableChooser<>();//initialize chooser for autos

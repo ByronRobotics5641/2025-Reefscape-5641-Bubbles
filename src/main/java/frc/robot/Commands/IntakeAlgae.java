@@ -25,19 +25,19 @@ public class IntakeAlgae extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    algae.algaeDriver(speed);
+    algae.algaeDriver(speed, false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algae.algaeDriver(speed);
+    algae.algaeDriver(speed, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algae.algaeDriver(0);
+    algae.algaeDriver(0, false);
   }
 
   // Returns true when the command should end.

@@ -3,16 +3,11 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "3 Coral Auto",
-    "Back Auto",
-    "Front Auto",
     "Leave Auto",
-    "Right Far Auto",
-    "Right Near Auto",
+    "1 Coral Auto",
     "Test Auto"
   ],
   "autoFolders": [
-    "2025 ReefScape",
     "Test Folder"
   ],
   "defaultMaxVel": 5.0,
