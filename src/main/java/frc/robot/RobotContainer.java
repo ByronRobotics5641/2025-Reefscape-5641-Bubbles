@@ -44,6 +44,9 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.TestAuto;
+import frc.robot.Commands.CoralIn;
+import frc.robot.Commands.CoralOut;
+import frc.robot.Commands.InstMoveLevel;
 //import frc.robot.Commands.AlgaeDriver;
 //import frc.robot.Commands.ElevatorDrive;
 import frc.robot.Commands.LimelightAlign;
@@ -372,47 +375,8 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
-
-
-    NamedCommands.registerCommand("Shoot Coral", m_coralOut);
-    NamedCommands.registerCommand("Stop Coral", m_coralStop);
-    NamedCommands.registerCommand("Load Coral", m_coralIn);
-
-    /*NamedCommands.registerCommand("Coral Angle Up", m_upAngle);
-    NamedCommands.registerCommand("Coral Angle Down", m_downAngle);
-    NamedCommands.registerCommand("Coral Angle Stop", m_stopAngle);*/
-
-    NamedCommands.registerCommand("Zero 1", m_zeroCoral);
-    NamedCommands.registerCommand("Zero 2", m_zeroPID);
-
-    NamedCommands.registerCommand("Algae Intake", m_startIntake);
-    NamedCommands.registerCommand("Algae Out", m_reverseIntake);
-    NamedCommands.registerCommand("Algae Stop", m_stopIntake);
-
-    NamedCommands.registerCommand("Algae Angle Up", m_algaeUp);
-    NamedCommands.registerCommand("Algae Angle Down", m_algaeDown);
-    NamedCommands.registerCommand("Algae Angle Stop", m_algaeStop);
-
-    NamedCommands.registerCommand("Ele Up", m_eleLift);
-    NamedCommands.registerCommand("Ele Down", m_eleDown);
-    NamedCommands.registerCommand("Ele Stop", m_eleStop);
-
-    NamedCommands.registerCommand("L1", new InstantCommand(() -> coralSubsystem.manip1()));
-    NamedCommands.registerCommand("L2", new InstantCommand(() -> coralSubsystem.manip2()));
-    NamedCommands.registerCommand("L3", new InstantCommand(() -> coralSubsystem.manip3()));
-    NamedCommands.registerCommand("Coral", m_manip4);
-    NamedCommands.registerCommand("Algae L2", m_manip5);
-    NamedCommands.registerCommand("Algae L3", m_manip6);
-
-    NamedCommands.registerCommand("EL1", m_Emanip1);
-    NamedCommands.registerCommand("EL2", new InstantCommand(() -> elevatorSubsystem.Emanip2()));
-    NamedCommands.registerCommand("EL3", m_Emanip3);
-    NamedCommands.registerCommand("ECoral", m_Emanip4);
-    NamedCommands.registerCommand("EAlgae L2", m_Emanip5);
-    NamedCommands.registerCommand("EAlgae L3", m_Emanip6);
-
-
-
+    
+    configurePathPlannerCommands();
 
     pathChooser = AutoBuilder.buildAutoChooser();
 
@@ -427,6 +391,52 @@ public class RobotContainer {
     //autoChooser.addOption("TEST: Swerve",testSwerve);     //pit test
 
     configureBindings();
+  }
+
+  public void configurePathPlannerCommands(){
+
+    NamedCommands.registerCommand("Shoot Coral", m_coralOut);
+    NamedCommands.registerCommand("Stop Coral", m_coralStop);
+    NamedCommands.registerCommand("Load Coral", m_coralIn);
+
+    /*NamedCommands.registerCommand("Coral Angle Up", m_upAngle);
+    NamedCommands.registerCommand("Coral Angle Down", m_downAngle);
+    NamedCommands.registerCommand("Coral Angle Stop", m_stopAngle);*/
+
+    NamedCommands.registerCommand("Zero 1", m_zeroCoral);
+    NamedCommands.registerCommand("Zero 2", m_zeroPID);
+
+    NamedCommands.registerCommand("Algae Intake", new CoralIn(coralSubsystem));// These use command classes.
+    NamedCommands.registerCommand("Algae Out", new CoralOut(coralSubsystem));  // They are set up to stop when
+                                                                                    // the command ends(setTimeout, for example)
+
+    NamedCommands.registerCommand("Algae Stop", m_stopIntake);
+
+    NamedCommands.registerCommand("Algae Angle Up", m_algaeUp);
+    NamedCommands.registerCommand("Algae Angle Down", m_algaeDown);
+    NamedCommands.registerCommand("Algae Angle Stop", m_algaeStop);
+
+    NamedCommands.registerCommand("Ele Up", m_eleLift);
+    NamedCommands.registerCommand("Ele Down", m_eleDown);
+    NamedCommands.registerCommand("Ele Stop", m_eleStop);
+
+    NamedCommands.registerCommand("L1", new InstantCommand(() -> coralSubsystem.manip1()));
+
+    //<TODO> Test MoveLevel and InstMoveLevel, designed to move coral and ele at once
+    NamedCommands.registerCommand("L2", new InstMoveLevel(2, coralSubsystem, elevatorSubsystem));
+
+    NamedCommands.registerCommand("L3", new InstantCommand(() -> coralSubsystem.manip3()));
+    NamedCommands.registerCommand("Coral", m_manip4);
+    NamedCommands.registerCommand("Algae L2", m_manip5);
+    NamedCommands.registerCommand("Algae L3", m_manip6);
+
+    NamedCommands.registerCommand("EL1", m_Emanip1);
+    NamedCommands.registerCommand("EL2", new InstantCommand(() -> elevatorSubsystem.Emanip2()));
+    NamedCommands.registerCommand("EL3", m_Emanip3);
+    NamedCommands.registerCommand("ECoral", m_Emanip4);
+    NamedCommands.registerCommand("EAlgae L2", m_Emanip5);
+    NamedCommands.registerCommand("EAlgae L3", m_Emanip6);
+
   }
 
   public Command getAutonomousCommand() {
