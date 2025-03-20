@@ -111,7 +111,7 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
                     m_pathApplyRobotSpeeds.withSpeeds(speeds)),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(10, 0, 0.2),
                     // PID constants for rotation
                     new PIDConstants(7, 0, 0)
                 ),

@@ -189,7 +189,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     else if(count == 4) {
 
-      this.setpoint = -103;
+      this.setpoint = -114;
       //System.out.println("Elevator Coral Intake");
     }
     else if(count == 5) {
