@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 
-import java.io.OutputStream;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -189,7 +188,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     else if(count == 4) {
 
-      this.setpoint = -114;
+      this.setpoint = -120;
       //System.out.println("Elevator Coral Intake");
     }
     else if(count == 5) {

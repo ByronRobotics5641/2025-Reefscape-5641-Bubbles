@@ -4,33 +4,33 @@
 
 package frc.robot;
 
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+//import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveModule.DriveRequestType;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+//import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 //import com.ctre.phoenix6.swerve.SwerveDrivetrain.OdometryThread;
-import com.fasterxml.jackson.databind.util.Named;
+//import com.fasterxml.jackson.databind.util.Named;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+//import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+//import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -41,15 +41,19 @@ import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.LightsSubsystem;
+//import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
-import frc.robot.Autos.CoralAuto1;
+import frc.robot.Autos.AlgaeL2;
+import frc.robot.Autos.AlgaeL3;
+import frc.robot.Autos.CoralIntake;
+import frc.robot.Autos.Level2;
+import frc.robot.Autos.Level3;
 import frc.robot.Autos.TestAuto;
 //import frc.robot.Commands.AlgaeDriver;
 //import frc.robot.Commands.ElevatorDrive;
 import frc.robot.Commands.LimelightAlign;
-import frc.robot.Commands.MoveEL2;
-import frc.robot.Commands.MoveL2;
+import frc.robot.Commands.MoveCommands.MoveEL2;
+import frc.robot.Commands.MoveCommands.MoveL2;
 
 public class RobotContainer {
 
@@ -71,7 +75,7 @@ public class RobotContainer {
   private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private final LightsSubsystem lightsSubsystem = new LightsSubsystem();
+  //private final LightsSubsystem lightsSubsystem = new LightsSubsystem();
 
   /********speed limit variables****/
   double driveSpeed = .6;
@@ -142,8 +146,8 @@ public class RobotContainer {
   private final Command m_coralOut = Commands.runOnce(coralSubsystem::coralOut, coralSubsystem);
   private final Command m_coralStop = Commands.runOnce(coralSubsystem::coralStop, coralSubsystem);
 
-  private final Command m_driveUpAngle = Commands.runOnce(coralSubsystem::driveUpAngle, coralSubsystem);
-  private final Command m_driveDownAngle = Commands.runOnce(coralSubsystem::driveDownAngle, coralSubsystem);
+  //private final Command m_driveUpAngle = Commands.runOnce(coralSubsystem::driveUpAngle, coralSubsystem);
+  //private final Command m_driveDownAngle = Commands.runOnce(coralSubsystem::driveDownAngle, coralSubsystem);
   private final Command m_zeroCoral = Commands.runOnce(coralSubsystem::zeroCoral, coralSubsystem);
 
   //private final Command m_downAngle = Commands.runOnce(coralSubsystem::downAngle, coralSubsystem);
@@ -170,9 +174,9 @@ public class RobotContainer {
   private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
   private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
 
-  private final Command m_algaeUp = Commands.runOnce(algaeSubsystem::algaeUp, algaeSubsystem);
-  private final Command m_algaeDown = Commands.runOnce(algaeSubsystem::algaeDown, algaeSubsystem);
-  private final Command m_algaeStop = Commands.runOnce(algaeSubsystem::algaeStop, algaeSubsystem);
+  //private final Command m_algaeUp = Commands.runOnce(algaeSubsystem::algaeUp, algaeSubsystem);
+  //private final Command m_algaeDown = Commands.runOnce(algaeSubsystem::algaeDown, algaeSubsystem);
+  //private final Command m_algaeStop = Commands.runOnce(algaeSubsystem::algaeStop, algaeSubsystem);
 
   private final Command m_eleStop = Commands.runOnce(elevatorSubsystem::eleStop, elevatorSubsystem);
   //private final Command m_eleRight = Commands.runOnce(elevatorSubsystem::eleRight, elevatorSubsystem);
@@ -181,18 +185,18 @@ public class RobotContainer {
   private final Command m_eleLift = Commands.runOnce(elevatorSubsystem::eleLift, elevatorSubsystem);
   private final Command m_eleDown = Commands.runOnce(elevatorSubsystem::eleDown, elevatorSubsystem);
 
-  private final Command m_drivePID = Commands.runOnce(elevatorSubsystem::drivePID, elevatorSubsystem);
+  //private final Command m_drivePID = Commands.runOnce(elevatorSubsystem::drivePID, elevatorSubsystem);
   private final Command m_zeroPID = Commands.runOnce(elevatorSubsystem::zeroPID, elevatorSubsystem);
 
   //for elevator PID
-  private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
-  private final Command m_eleDownCount = Commands.runOnce(elevatorSubsystem::downCount, elevatorSubsystem);
+  //private final Command m_eleUpCount = Commands.runOnce(elevatorSubsystem::upCount, elevatorSubsystem);
+  //private final Command m_eleDownCount = Commands.runOnce(elevatorSubsystem::downCount, elevatorSubsystem);
   //private final Command m_eleManual = Commands.run(() ->elevatorSubsystem.setIsManual(true), elevatorSubsystem);
   private final Command m_elePID = Commands.run(() ->elevatorSubsystem.setIsManual(false), elevatorSubsystem);
 
-  private final Command m_bajarCount = Commands.runOnce(coralSubsystem::bajarCount, coralSubsystem);
-  private final Command m_arribaCount = Commands.runOnce(coralSubsystem::arribaCount, coralSubsystem);
-  private final Command m_coralManual = Commands.run(() ->coralSubsystem.setCManual(true), coralSubsystem);
+  //private final Command m_bajarCount = Commands.runOnce(coralSubsystem::bajarCount, coralSubsystem);
+  //private final Command m_arribaCount = Commands.runOnce(coralSubsystem::arribaCount, coralSubsystem);
+  //private final Command m_coralManual = Commands.run(() ->coralSubsystem.setCManual(true), coralSubsystem);
   private final Command m_coralPID = Commands.run(() ->coralSubsystem.setCManual(false), coralSubsystem);
  
  // private final Command m_setalliancecolor = Commands.runOnce(lightsSubsystem::setAllianceColor,lightsSubsystem);
@@ -381,7 +385,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Coral", m_coralStop);
     NamedCommands.registerCommand("Load Coral", m_coralIn);
 
-    NamedCommands.registerCommand("Coral1", new CoralAuto1(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("Level2", new Level2(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("Level3", new Level3(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("CoralIntake", new CoralIntake(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("AlgaeL2", new AlgaeL2(coralSubsystem, elevatorSubsystem));
+    NamedCommands.registerCommand("AlgaeL3", new AlgaeL3(coralSubsystem, elevatorSubsystem));
 
     /*NamedCommands.registerCommand("Coral Angle Up", m_upAngle);
     NamedCommands.registerCommand("Coral Angle Down", m_downAngle);
@@ -425,7 +433,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("path Chooser", pathChooser);
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
    // SmartDashboard.putBoolean("check Coral Trigger", checkcoralTrigger.getAsBoolean());
     
 

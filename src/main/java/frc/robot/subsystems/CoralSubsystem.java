@@ -63,7 +63,7 @@ public class CoralSubsystem extends SubsystemBase {
   //treat proximity like limit switch
   public boolean checkCoral(){
     //use value when nothing is in SF
-    if (colorSensor.getProximity() == 2047){
+    if (colorSensor.getProximity() > 150){
       return true;
     }
     else{
@@ -203,12 +203,12 @@ public class CoralSubsystem extends SubsystemBase {
 
     }
     else if(count == 3) { //L3
-      this.setpoint = 91;
+      this.setpoint = 93;
       System.out.println("Coral L3");
 
     }
     else if(count == 4) { //Coral Intake
-      this.setpoint = 62;
+      this.setpoint = 61;
      // System.out.println("Coral Coral Intake");
 
     }
@@ -218,7 +218,7 @@ public class CoralSubsystem extends SubsystemBase {
 
     }
     else if(count == 6) { //Algae L3
-      this.setpoint = 65;
+      this.setpoint = 67;
       //System.out.println("Coral Algae L3");
 
     }
@@ -262,5 +262,6 @@ public class CoralSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
     SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());
     SmartDashboard.putBoolean("colorboolean", checkCoral());
+    SmartDashboard.putBoolean("coral limit", noUp);
   }
 }

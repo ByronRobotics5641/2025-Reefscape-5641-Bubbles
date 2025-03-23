@@ -9,7 +9,6 @@ import java.util.Optional;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 
-import frc.robot.subsystems.CoralSubsystem;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -39,7 +38,9 @@ public class LightsSubsystem extends SubsystemBase {
           lights.set (-0.09);
           //System.out.println("Alliance: Blue");
     }
-    else {}
+    else {
+      lights.set(-0.27);
+    }
         //System.out.println("No alliance color found");
      }
     
@@ -49,7 +50,7 @@ public class LightsSubsystem extends SubsystemBase {
 
      public boolean checkCoral(){
       //use value when nothing is in SF
-      if (colorSensor.getProximity() == 2047){
+      if (colorSensor.getProximity() > 150){
         return true;
       }
       else{

@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Coral1"
+            "name": "Level2"
           }
         },
         {
@@ -21,11 +21,17 @@
           "data": {
             "pathName": "1 Note Auto 2"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralIntake"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Reefscape 2025",
   "choreoAuto": false
 }
