@@ -6,9 +6,9 @@ package frc.robot.Autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Commands.OutCoral;
-import frc.robot.Commands.ZeroAngle;
 import frc.robot.Commands.MoveCommands.MoveL1;
+import frc.robot.Commands.TopCommands.OutCoral;
+import frc.robot.Commands.TopCommands.ZeroAngle;
 import frc.robot.subsystems.CoralSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

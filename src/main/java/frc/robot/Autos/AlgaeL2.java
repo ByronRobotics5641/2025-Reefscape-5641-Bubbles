@@ -6,9 +6,9 @@ package frc.robot.Autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Commands.OutCoral;
 import frc.robot.Commands.MoveCommands.MoveEL5;
 import frc.robot.Commands.MoveCommands.MoveL5;
+import frc.robot.Commands.TopCommands.OutCoral;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
