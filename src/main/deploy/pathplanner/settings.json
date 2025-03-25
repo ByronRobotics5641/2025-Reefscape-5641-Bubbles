@@ -3,10 +3,10 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "1 Coral Auto",
-    "Leave Auto",
+    "L2LSide",
     "L1Side",
-    "RightCoral",
+    "Leave Auto",
+    "L2RSide",
     "Straight Auto",
     "Test Auto"
   ],

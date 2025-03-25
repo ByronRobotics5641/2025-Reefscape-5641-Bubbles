@@ -6,10 +6,12 @@ package frc.robot.Autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Commands.MoveCommands.MoveEL1;
 import frc.robot.Commands.MoveCommands.MoveL1;
 import frc.robot.Commands.TopCommands.OutCoral;
 import frc.robot.Commands.TopCommands.ZeroAngle;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -17,8 +19,9 @@ import frc.robot.subsystems.CoralSubsystem;
 public class Level1 extends SequentialCommandGroup {
   /** Creates a new Level1. */
   CoralSubsystem coral;
+  ElevatorSubsystem ele;
 
-  public Level1(CoralSubsystem coral) {
+  public Level1(CoralSubsystem coral, ElevatorSubsystem ele) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

@@ -46,6 +46,7 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import frc.robot.Autos.AlgaeL2;
 import frc.robot.Autos.AlgaeL3;
 import frc.robot.Autos.CoralIntake;
+import frc.robot.Autos.Level1;
 import frc.robot.Autos.Level2;
 import frc.robot.Autos.Level3;
 import frc.robot.Autos.TestAuto;
@@ -385,6 +386,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Coral", m_coralStop);
     NamedCommands.registerCommand("Load Coral", m_coralIn);
 
+    NamedCommands.registerCommand("Level1", new Level1(coralSubsystem, elevatorSubsystem));
     NamedCommands.registerCommand("Level2", new Level2(coralSubsystem, elevatorSubsystem));
     NamedCommands.registerCommand("Level3", new Level3(coralSubsystem, elevatorSubsystem));
     NamedCommands.registerCommand("CoralIntake", new CoralIntake(coralSubsystem, elevatorSubsystem));

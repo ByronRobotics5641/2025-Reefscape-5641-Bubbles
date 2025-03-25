@@ -5,8 +5,10 @@
 package frc.robot.Autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Commands.MoveCommands.MoveEL4;
 import frc.robot.Commands.MoveCommands.MoveL4;
+import frc.robot.Commands.TopCommands.ShootCoral;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -21,7 +23,9 @@ public class CoralIntake extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveEL4(ele).alongWith(new MoveL4(coral)).withTimeout(2)
+      new MoveEL4(ele).alongWith(new MoveL4(coral)).withTimeout(2),
+      new WaitCommand(.1),
+      new ShootCoral(coral).withTimeout(20)
     );
   }
 }

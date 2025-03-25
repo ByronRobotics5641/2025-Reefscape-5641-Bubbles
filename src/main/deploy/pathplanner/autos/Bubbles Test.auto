@@ -3,7 +3,44 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Auto P1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Level3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Auto P2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Level2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Auto P3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Level1"
+          }
+        }
+      ]
     }
   },
   "resetOdom": true,

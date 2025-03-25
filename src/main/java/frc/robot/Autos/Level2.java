@@ -29,7 +29,7 @@ public class Level2 extends SequentialCommandGroup {
       new MoveEL2(ele).withTimeout(1),
       new WaitCommand(.5),
       new MoveL2(coral).withTimeout(1),
-      new WaitCommand(1),
+      new WaitCommand(2),
       new OutCoral(coral).withTimeout(.5),
       new WaitCommand(.5),
       new ZeroEle(ele).alongWith(new ZeroAngle(coral)).withTimeout(1)
