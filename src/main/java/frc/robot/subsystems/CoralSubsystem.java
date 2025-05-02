@@ -96,12 +96,15 @@ public class CoralSubsystem extends SubsystemBase {
         rotate.set(speed * 0);
       }
       else{
-        rotate.set(speed * 0.6);
+        rotate.set(speed * 0.8);
       }
     }
-     else {
+     else if(!cManual) {
       setSetpoint();
       angleToPoint();
+     }
+     else {
+      rotate.set(speed * 0);
     }
   }
 
@@ -195,32 +198,26 @@ public class CoralSubsystem extends SubsystemBase {
     if(count == 1) { //L1
       this.setpoint = 80;
      // System.out.println("Coral L1");
-
     }
     else if(count == 2) { //L2
       this.setpoint = 117;
     //  System.out.println("Coral L2");
-
     }
     else if(count == 3) { //L3
       this.setpoint = 93;
-      System.out.println("Coral L3");
-
+      //System.out.println("Coral L3");
     }
     else if(count == 4) { //Coral Intake
       this.setpoint = 61;
      // System.out.println("Coral Coral Intake");
-
     }
     else if(count == 5) { //Algae L2
       this.setpoint = 65;
       //System.out.println("Coral Algae L2");
-
     }
     else if(count == 6) { //Algae L3
       this.setpoint = 67;
       //System.out.println("Coral Algae L3");
-
     }
     else {
       this.setpoint = 0;

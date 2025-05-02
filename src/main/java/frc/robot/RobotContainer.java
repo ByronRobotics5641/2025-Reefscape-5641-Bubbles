@@ -132,12 +132,13 @@ public class RobotContainer {
 
   //from Commands folder/package------------------------>>subsystem------->>controller input
   //private final AlgaeDriver m_algaeAngle = new AlgaeDriver(algaeSubsystem, m_manipController.getRightY()); //check with control layout
-  private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.3), angleLimit.get()), algaeSubsystem);
+  //private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.5)), algaeSubsystem);
   //private final Command m_algaeLimiter = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(-Math.abs(m_manipController.getRightY()), 0.2), angleLimit.get()), algaeSubsystem);
 
+  private final Command m_algaeDriver = Commands.runOnce(() -> algaeSubsystem.algaeDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.5), angleLimit.get()), algaeSubsystem);
 
-  private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.2), eleLeft.get(), m_manipController.start().getAsBoolean() || manipManualEle.getAsBoolean()), elevatorSubsystem);
-  private final Command m_angleDriver = Commands.run(() ->coralSubsystem.angleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.2),noUp.get(), m_manipController.back().getAsBoolean() || manipManualCoral.getAsBoolean()), coralSubsystem);
+  private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.4), eleLeft.get(), m_manipController.start().getAsBoolean() || manipManualEle.getAsBoolean()), elevatorSubsystem);
+  private final Command m_angleDriver = Commands.run(() ->coralSubsystem.angleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.4),noUp.get(), m_manipController.back().getAsBoolean() || manipManualCoral.getAsBoolean()), coralSubsystem);
   //private final Command m_eleLimiter = Commands.run(() ->elevatorSubsystem.eleDriver(m_manipController.getLeftY()), elevatorSubsystem);
 
   /******commands******/
@@ -307,7 +308,7 @@ public class RobotContainer {
 
 
     /*****Assigning Stick Values*****/
-    algaeSubsystem.setDefaultCommand(m_algaeAngle);// defaults to stick value, can be linked to a button or command trigger later
+    algaeSubsystem.setDefaultCommand(m_algaeDriver);// defaults to stick value, can be linked to a button or command trigger later
     elevatorSubsystem.setDefaultCommand(m_eleDriver);
     coralSubsystem.setDefaultCommand(m_angleDriver);
    // lightsSubsystem.setDefaultCommand(m_colors);
@@ -349,8 +350,8 @@ public class RobotContainer {
     manipAlgaeIn.whileTrue(m_startIntake).onFalse(m_stopIntake);
     manipAlgaeOut.whileTrue(m_reverseIntake).onFalse(m_stopIntake);
 
-    manipManualEle.onFalse(m_elePID);
-    manipManualCoral.onFalse(m_coralPID);
+    manipManualEle.whileFalse(m_elePID);
+    manipManualCoral.whileFalse(m_coralPID);
 
     //manipAlgaeUp.whileTrue(m_algaeUp).onFalse(m_algaeStop);
     //manipAlgaeDown.whileTrue(m_algaeDown).onFalse(m_algaeStop);

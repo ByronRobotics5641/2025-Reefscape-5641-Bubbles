@@ -36,19 +36,19 @@ public class AlgaeDriver extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    algae.algaeAngle(speed, armNo);
+    algae.algaeDriver(speed, armNo);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algae.algaeAngle(speed, armNo);
+    algae.algaeDriver(speed, armNo);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algae.algaeAngle(0, armNo);
+    algae.algaeDriver(0, armNo);
   }
 
   // Returns true when the command should end.

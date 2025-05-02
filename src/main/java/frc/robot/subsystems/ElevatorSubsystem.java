@@ -27,6 +27,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   final double iLimit = 1;
   final double kD = 0.2;
 
+  final double speedMult = 1.3;
+
   double setpoint = 0;
   double stopPoint = 0;
   double errorSum = 0;
@@ -65,79 +67,92 @@ public class ElevatorSubsystem extends SubsystemBase {
     //System.out.println("Setting isManual to: " + isManual);  // Debugging line
     this.isManual = isManual;
   }
+
   // stick value is DoubleSupplier, passed in through command or instant command with ()->m_manipController.getLeftY()
-  public void eleDriver(double speed, boolean noDown, boolean isManual) {
+  public void eleDriver(double speed, boolean noDown, boolean isManual) 
+  {
     this.noDown = noDown;
     if (isManual)
     {
       //System.out.println("isManual");
-      if(!noDown && speed > 0) {
+      if(!noDown && speed > 0) 
+      {
         lead.set(0);
         follow.set(0);
       }
-      else if(speed < 0 && encoder.getPosition() <= -345) {
+      else if(speed < 0 && encoder.getPosition() <= -345) 
+      {
         lead.set(0);
         follow.set(0);
       }
-      else{
+      else
+      {
         lead.set(speed * .55);
         follow.set(speed * .55);
       }
     }
-     else {
+    else
+    {
       setSetpoint();
       heightToPoint();
     }
-
-
-    
   }
 
-  public void eleReset() {
+  public void eleReset() 
+  {
     encoder.setPosition(0);
     setSetpoint(0);
   }
 
-  public void eleLift() {
+  public void eleLift() 
+  {
     lead.set(.2);
     follow.set(.2);
   }
-  public void eleDown() {
+
+  public void eleDown() 
+  {
     lead.set(-.2);
     follow.set( -.2);
   }
 
 
-  public void eleRight() {
+  public void eleRight() 
+  {
     lead.set(.2);
   }
-  public void eleLeft() {
+
+  public void eleLeft() 
+  {
     follow.set(.2);
   }
 
 
-  public void eleStop() {
+  public void eleStop() 
+  {
     lead.set(0);
     lead.set(0);
   }
-  public void upCount() {
+
+  public void upCount() 
+  {
     //setIsManual(false);
-    if(count <= 5) {
+    if(count <= 5)
       count++;
-    }
-    else {
+    else
       count = 0;
-    }
+
   }
+
   public void downCount() {
     //setIsManual(false);
  
-    if(count > 0) {
+    if(count > 0)
       count--;
-    }
-    else {
+      
+    else
       count = 6;
-    }
+
   }
 
   public void zeroPID() {
@@ -172,39 +187,36 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setSetpoint() {
-    //setIsManual(false);
-    if(count == 1) {
+
+    //Elevator L1
+    if(count == 1)
       this.setpoint = 0;
-      //System.out.println("Elevator L1");
-    }
-    else if(count == 2) {
+
+    //Elevator L2
+    else if(count == 2) 
       this.setpoint = -224;
-      //System.out.println("Elevator L2");
-    }
-    else if(count == 3) {
 
+    //Elevator L3
+    else if(count == 3)
       this.setpoint = -339;
-      //System.out.println("Elevator L3");
-    }
-    else if(count == 4) {
 
+    //Elevator Coral Intake
+    else if(count == 4)
       this.setpoint = -120;
-      //System.out.println("Elevator Coral Intake");
-    }
-    else if(count == 5) {
+
+    //Elevator Algae L2
+    else if(count == 5)
       this.setpoint = -127;
-      //System.out.println("Elevator Algae L2");
-    }
-    else if(count == 6) {
+
+    //Elevator Algae L3
+    else if(count == 6)
       this.setpoint = -335;
-      //System.out.println("Elevator Algae L3");
-    }
-    else {
+
+    //Elevator Resting
+    else 
       this.setpoint = 0;
-      //System.out.println("Elevator Resting");
-    }
+
   }
-    //encoder.setPosition(0); resets position
   
 
   public void setSetpoint(int setpoint) {
@@ -218,7 +230,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     if (sensorPosition < -345 && kP > 0) { // Assuming kP is positive when going up
-
       lead.set(0);
       follow.set(0);
       return;  // Stop PID control if height limit is reached
@@ -227,10 +238,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     double error = setpoint - sensorPosition;
     double dt = Timer.getFPGATimestamp() - lastTimestamp;
 
-
-    if (Math.abs(error) < iLimit) {
+    //keep I value between 0 and 1
+    if (Math.abs(error) < iLimit)
       errorSum += error * dt;
-    }
 
     double errorRate = (error - lastError) / dt;
 
@@ -243,8 +253,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       follow.set(0);
     }
     else {
-      lead.set(outPutSpeed);
-      follow.set(outPutSpeed);
+      lead.set(outPutSpeed*speedMult);
+      follow.set(outPutSpeed*speedMult);
     }
 
   }
@@ -252,16 +262,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-    //SmartDashboard.getNumber("Distance Measured", encoder.getPosition() * kDriveTick2Feet);
-    // This method will be called once per scheduler run
-    /*if (!isManual) {
-      setSetpoint();
-      heightToPoint();
-    }*/
 
-      //System.out.println("Elevator Count: "+count);
-
-      //System.out.println(outPutSpeed);
       SmartDashboard.putBoolean("Ele Limit", !noDown);
       SmartDashboard.putNumber("Elevator Encoder", encoder.getPosition());  
       SmartDashboard.putBoolean("Manual", isManual);   
