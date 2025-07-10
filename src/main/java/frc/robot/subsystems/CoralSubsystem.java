@@ -24,7 +24,7 @@ public class CoralSubsystem extends SubsystemBase {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;//use I2C port of RIO
   private final ColorSensorV3 colorSensor = new ColorSensorV3(i2cPort);//v3 color sensor
   /////////////
-  
+
   DigitalInput coralDetect = new DigitalInput(3);
 
   private final double kDriveTick2Degrees = (1*360) / 100;// rotations to degrees, reduced by 100 times(100:1)

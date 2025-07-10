@@ -38,11 +38,11 @@ public class AlgaeSubsystem extends SubsystemBase {
 
     public void algaeDriver(double speed, boolean angleLimit) {
       this.angleLimit = angleLimit;
-      if(angleLimit && speed > 0) {//Can we add position zeroing here?
+      if(angleLimit && speed > 0) {
         arm.set(speed * 0);
         encoder.setPosition(0);
       }
-      else if(speed < 0 && encoder.getPosition() <= -40) //Is the upper limit positive or negative?
+      else if(speed < 0 && encoder.getPosition() <= -40)
       {
         arm.set(speed * 0);
       }

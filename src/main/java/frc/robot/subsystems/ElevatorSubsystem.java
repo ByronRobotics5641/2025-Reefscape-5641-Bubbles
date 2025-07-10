@@ -80,7 +80,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         lead.set(0);
         follow.set(0);
       }
-      else if(speed < 0 && encoder.getPosition() <= -345) 
+      else if(speed < 0 && encoder.getPosition() <= -354) 
       {
         lead.set(0);
         follow.set(0);
@@ -198,7 +198,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //Elevator L3
     else if(count == 3)
-      this.setpoint = -339;
+      this.setpoint = -349;
 
     //Elevator Coral Intake
     else if(count == 4)
@@ -210,7 +210,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //Elevator Algae L3
     else if(count == 6)
-      this.setpoint = -335;
+      this.setpoint = -339;
 
     //Elevator Resting
     else 
@@ -229,7 +229,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.getNumber("position", sensorPosition);
     
 
-    if (sensorPosition < -345 && kP > 0) { // Assuming kP is positive when going up
+    if (sensorPosition < -354 && kP > 0) { // Assuming kP is positive when going up
       lead.set(0);
       follow.set(0);
       return;  // Stop PID control if height limit is reached
