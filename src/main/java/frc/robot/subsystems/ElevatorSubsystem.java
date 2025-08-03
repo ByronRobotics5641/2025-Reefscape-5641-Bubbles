@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
@@ -190,27 +191,27 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //Elevator L1
     if(count == 1)
-      this.setpoint = 0;
+      this.setpoint = Constants.L1;
 
     //Elevator L2
     else if(count == 2) 
-      this.setpoint = -224;
+      this.setpoint = Constants.L2;
 
     //Elevator L3
     else if(count == 3)
-      this.setpoint = -349;
+      this.setpoint = Constants.L3;
 
     //Elevator Coral Intake
     else if(count == 4)
-      this.setpoint = -120;
+      this.setpoint = Constants.CORAL_INTAKE;
 
     //Elevator Algae L2
     else if(count == 5)
-      this.setpoint = -127;
+      this.setpoint = Constants.ELE_ALGAE_L2;
 
     //Elevator Algae L3
     else if(count == 6)
-      this.setpoint = -339;
+      this.setpoint = Constants.ELE_ALGAE_L3;
 
     //Elevator Resting
     else 

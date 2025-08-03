@@ -10,6 +10,7 @@ import frc.robot.Commands.MoveCommands.MoveEL1;
 import frc.robot.Commands.MoveCommands.MoveL1;
 import frc.robot.Commands.TopCommands.OutCoral;
 import frc.robot.Commands.TopCommands.ZeroAngle;
+import frc.robot.Commands.TopCommands.ZeroEle;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -29,7 +30,7 @@ public class Level1 extends SequentialCommandGroup {
       new WaitCommand(1),
       new OutCoral(coral).withTimeout(0.5),
       new WaitCommand(.5),
-      new ZeroAngle(coral).withTimeout(.0)
+      new ZeroEle(ele).alongWith(new ZeroAngle(coral)).withTimeout(1)
     );
   }
 }

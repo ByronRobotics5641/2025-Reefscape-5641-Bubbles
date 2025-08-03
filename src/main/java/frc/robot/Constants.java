@@ -8,4 +8,23 @@ package frc.robot;
 public class Constants {
     public static final double MaxSpeed = 3; //MPS
     public static final double MaxAngularRate = .925 * Math.PI;// Radians/s   original 0.825
+
+    /********** Elevator heights ********/
+
+    public static final double L1 = -17;
+    public static final double L2 = -224;
+    public static final double L3 = -349;
+    public static final double CORAL_INTAKE = -137;
+    public static final double ELE_ALGAE_L2 = -127;
+    public static final double ELE_ALGAE_L3 = -339;
+
+
+    //********** Suckerfish angles******/
+    public static final double CL1 = 80;
+    public static final double CL2 = 117;
+    public static final double CL3 = 89;
+    public static final double C_CORAL_INTAKE = 56;
+    public static final double C_ALGAE_L2 = 65;
+    public static final double C_ALGAE_L3 = 67;
+
 }
