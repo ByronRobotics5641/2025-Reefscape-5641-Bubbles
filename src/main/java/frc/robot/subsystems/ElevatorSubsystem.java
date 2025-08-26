@@ -230,7 +230,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.getNumber("position", sensorPosition);
     
 
-    if (sensorPosition < -354 && kP > 0) { // Assuming kP is positive when going up
+    if (sensorPosition < -199.125 && kP > 0) { // Assuming kP is positive when going up
       lead.set(0);
       follow.set(0);
       return;  // Stop PID control if height limit is reached
@@ -252,6 +252,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if(outPutSpeed > 0 && !noDown) {
       lead.set(0);
       follow.set(0);
+      encoder.setPosition(0);
     }
     else {
       lead.set(outPutSpeed*speedMult);

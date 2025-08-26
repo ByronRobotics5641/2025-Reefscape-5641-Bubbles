@@ -11,12 +11,12 @@ public class Constants {
 
     /********** Elevator heights ********/
 
-    public static final double L1 = -17;
-    public static final double L2 = -224;
-    public static final double L3 = -349;
-    public static final double CORAL_INTAKE = -137;
-    public static final double ELE_ALGAE_L2 = -127;
-    public static final double ELE_ALGAE_L3 = -339;
+    public static final double L1 = -9.54;
+    public static final double L2 = -126;
+    public static final double L3 = -196.308;
+    public static final double CORAL_INTAKE = -77.04;
+    public static final double ELE_ALGAE_L2 = -76.17;// -71.424
+    public static final double ELE_ALGAE_L3 = -190.656;
 
 
     //********** Suckerfish angles******/
