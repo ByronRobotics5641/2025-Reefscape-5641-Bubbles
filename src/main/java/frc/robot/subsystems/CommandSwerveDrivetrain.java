@@ -13,16 +13,20 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
 
 
 /**
@@ -160,6 +164,11 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
                 hasAppliedOperatorPerspective = true;
             });
         }    
+
+        SmartDashboard.getNumber("Fiducial", LimelightHelpers.getFiducialID("limeLight"));
+        SmartDashboard.getBoolean("Target", LimelightHelpers.getTV("limeLight"));
+
+        updateOdometryFromLL_CTRE("limeLight");
     }
 
     /**
@@ -173,6 +182,30 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
+
+
+    public PoseEstimate updateOdometryFromLL_CTRE(String limelightName) {
+        double distance;
+        var driveState = getState();
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+        double omegaRps = Units.radiansToRotations(driveState.speeds.omegaRadiansPerSecond);
+
+        LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+        if(llMeasurement != null){
+            distance = getState().Pose.getTranslation().getDistance(llMeasurement.pose.getTranslation());
+        } else {
+            distance = 1000;
+        }
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0
+                && llMeasurement.avgTagDist < 3 && distance < 2) {
+            // super.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+            addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 9999999));
+        }
+
+        return llMeasurement;
+    }
+
 
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
