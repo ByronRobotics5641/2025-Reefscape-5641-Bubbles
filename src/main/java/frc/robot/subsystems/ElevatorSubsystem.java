@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
 
@@ -39,8 +40,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   boolean noDown;
 
-  SparkMax lead = new SparkMax(5, MotorType.kBrushless);
-  SparkMax follow = new SparkMax(6, MotorType.kBrushless);
+  SparkFlex lead = new SparkFlex(5, MotorType.kBrushless);
+  SparkFlex follow = new SparkFlex(6, MotorType.kBrushless);
   RelativeEncoder encoder;
 
 
@@ -89,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       else
       {
         lead.set(speed * .55);
-        follow.set(speed * .55);
+        follow.set(-speed * .55);
       }
     }
     else
@@ -152,7 +153,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       count--;
       
     else
-      count = 6;
+      count = 7;
 
   }
 
@@ -180,6 +181,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void Emanip6() {
     count = 6;
   }
+  public void Emanip7() {
+    count = 7;
+  }
   
   
   public void drivePID() {
@@ -200,6 +204,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     //Elevator L3
     else if(count == 3)
       this.setpoint = Constants.L3;
+
+    //Elevator L4
+    else if(count == 7)
+      this.setpoint = Constants.L4;
 
     //Elevator Coral Intake
     else if(count == 4)

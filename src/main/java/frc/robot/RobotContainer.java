@@ -262,6 +262,8 @@ public class RobotContainer {
 
     //joystick.button(3).whileTrue(limelightAlign);
 
+    joystick.x().whileTrue(limelightAlign);
+
     /*joystick.leftTrigger().onTrue(m_driveUpAngle);
     joystick.leftTrigger().onTrue(m_drivePID);
 

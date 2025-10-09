@@ -158,7 +158,7 @@ public class CoralSubsystem extends SubsystemBase {
       count--;
     }
     else {
-      count = 6;
+      count = 7;
     }
   }
 
@@ -193,6 +193,9 @@ public class CoralSubsystem extends SubsystemBase {
   public void manip6() {
     count = 6;
   }
+  public void manip7() {
+    count = 7;
+  }
   
   
   public void setSetpoint(){
@@ -207,6 +210,9 @@ public class CoralSubsystem extends SubsystemBase {
     else if(count == 3) { //L3
       this.setpoint = Constants.CL3;
       //System.out.println("Coral L3");
+    }
+    else if(count == 7) {
+      this.setpoint = Constants.CL4;
     }
     else if(count == 4) { //Coral Intake
       this.setpoint = Constants.C_CORAL_INTAKE;
@@ -255,7 +261,9 @@ public class CoralSubsystem extends SubsystemBase {
       angleToPoint();
     }*/
 
-    System.out.println("SF Count: "+ count);
+    //System.out.println("SF Count: "+ count);
+
+    SmartDashboard.putNumber("SF Count", count);
 
     SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
     SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());
