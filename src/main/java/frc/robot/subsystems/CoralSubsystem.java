@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.RelativeEncoder;
@@ -46,7 +47,7 @@ public class CoralSubsystem extends SubsystemBase {
   boolean noUp;
 
   SparkMax rotate = new SparkMax(3, MotorType.kBrushless);
-  SparkMax coral = new SparkMax(4, MotorType.kBrushless);
+  SparkFlex coral = new SparkFlex(4, MotorType.kBrushless);
   RelativeEncoder encoder;
 
   //Configures a new object

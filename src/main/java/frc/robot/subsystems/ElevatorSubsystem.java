@@ -109,17 +109,17 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void eleLift() 
   {
     lead.set(.2);
-    follow.set(.2);
+    follow.set(-.2);
   }
 
   public void eleDown() 
   {
     lead.set(-.2);
-    follow.set( -.2);
+    follow.set( .2);
   }
 
 
-  public void eleRight() 
+  /*public void eleRight() 
   {
     lead.set(.2);
   }
@@ -127,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void eleLeft() 
   {
     follow.set(.2);
-  }
+  }*/
 
 
   public void eleStop() 

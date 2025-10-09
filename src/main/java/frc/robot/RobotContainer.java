@@ -73,7 +73,7 @@ public class RobotContainer {
 
 
   /*******subsystems********/
-  private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
+  //private final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   //private final LightsSubsystem lightsSubsystem = new LightsSubsystem();
@@ -135,7 +135,7 @@ public class RobotContainer {
   //private final Command m_algaeAngle = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.5)), algaeSubsystem);
   //private final Command m_algaeLimiter = Commands.run(() -> algaeSubsystem.algaeAngle(MathUtil.applyDeadband(-Math.abs(m_manipController.getRightY()), 0.2), angleLimit.get()), algaeSubsystem);
 
-  private final Command m_algaeDriver = Commands.runOnce(() -> algaeSubsystem.algaeDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.5), angleLimit.get()), algaeSubsystem);
+  //private final Command m_algaeDriver = Commands.runOnce(() -> algaeSubsystem.algaeDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(2), 0.5), angleLimit.get()), algaeSubsystem);
 
   private final Command m_eleDriver = Commands.run(() ->elevatorSubsystem.eleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.4), eleLeft.get(), m_manipController.start().getAsBoolean() || manipManualEle.getAsBoolean()), elevatorSubsystem);
   private final Command m_angleDriver = Commands.run(() ->coralSubsystem.angleDriver(MathUtil.applyDeadband(m_manipController.getRawAxis(1), 0.4),noUp.get(), m_manipController.back().getAsBoolean() || manipManualCoral.getAsBoolean()), coralSubsystem);
@@ -172,9 +172,9 @@ public class RobotContainer {
   private final Command m_Emanip6 = Commands.runOnce(elevatorSubsystem::Emanip6, coralSubsystem);
 
 
-  private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
-  private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
-  private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
+  //private final Command m_startIntake = Commands.runOnce(algaeSubsystem::startIntake, algaeSubsystem);
+  //private final Command m_reverseIntake = Commands.runOnce(algaeSubsystem::reverseIntake, algaeSubsystem);
+  //private final Command m_stopIntake = Commands.runOnce(algaeSubsystem::stopIntake, algaeSubsystem);
 
   //private final Command m_algaeUp = Commands.runOnce(algaeSubsystem::algaeUp, algaeSubsystem);
   //private final Command m_algaeDown = Commands.runOnce(algaeSubsystem::algaeDown, algaeSubsystem);
@@ -310,7 +310,7 @@ public class RobotContainer {
 
 
     /*****Assigning Stick Values*****/
-    algaeSubsystem.setDefaultCommand(m_algaeDriver);// defaults to stick value, can be linked to a button or command trigger later
+    //algaeSubsystem.setDefaultCommand(m_algaeDriver);// defaults to stick value, can be linked to a button or command trigger later
     elevatorSubsystem.setDefaultCommand(m_eleDriver);
     coralSubsystem.setDefaultCommand(m_angleDriver);
    // lightsSubsystem.setDefaultCommand(m_colors);
@@ -349,8 +349,8 @@ public class RobotContainer {
     manipCoralIn.whileTrue(m_coralIn).onFalse(m_coralStop);
     manipCoralOut.whileTrue(m_coralOut).onFalse(m_coralStop);
 
-    manipAlgaeIn.whileTrue(m_startIntake).onFalse(m_stopIntake);
-    manipAlgaeOut.whileTrue(m_reverseIntake).onFalse(m_stopIntake);
+    //manipAlgaeIn.whileTrue(m_startIntake).onFalse(m_stopIntake);
+    //manipAlgaeOut.whileTrue(m_reverseIntake).onFalse(m_stopIntake);
 
     manipManualEle.whileFalse(m_elePID);
     manipManualCoral.whileFalse(m_coralPID);
@@ -419,8 +419,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", new MoveL2(coralSubsystem));
     NamedCommands.registerCommand("L3", m_manip3);
     NamedCommands.registerCommand("Coral", m_manip4);
-    NamedCommands.registerCommand("Algae L2", m_manip5);
-    NamedCommands.registerCommand("Algae L3", m_manip6);
+    //NamedCommands.registerCommand("Algae L2", m_manip5);
+    //NamedCommands.registerCommand("Algae L3", m_manip6);
 
     NamedCommands.registerCommand("EL1", m_Emanip1);
     NamedCommands.registerCommand("EL2", new MoveEL2(elevatorSubsystem));
