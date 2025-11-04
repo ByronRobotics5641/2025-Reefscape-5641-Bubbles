@@ -9,23 +9,11 @@
           "data": {
             "pathName": "Straight 1"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Level3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "Reefscape 2025",
   "choreoAuto": false
 }

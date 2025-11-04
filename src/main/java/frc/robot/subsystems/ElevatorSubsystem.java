@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,7 +24,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   boolean isManual = false;//start without PID... change in Elevator PID commands, call setIsManual(false)
 
-  final double kP = .25;
+  final double kP = .2;
   final double kI = 0;
   final double iLimit = 1;
   final double kD = 0.2;
@@ -267,7 +268,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       SmartDashboard.putBoolean("Ele Limit", !noDown);
       SmartDashboard.putNumber("Elevator Encoder", encoder.getPosition());  
-      SmartDashboard.putBoolean("Manual", isManual);   
+      SmartDashboard.putBoolean("Manual", isManual);
+      setIsManual(isManual);
+      if (!isManual && DriverStation.isTeleop()){
+        setSetpoint(count);
+      }   
 
   }
 }
