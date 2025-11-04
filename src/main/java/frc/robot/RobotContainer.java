@@ -432,7 +432,7 @@ public class RobotContainer {
 
 
 
-    pathChooser = AutoBuilder.buildAutoChooser("MiddleL3+Stay");
+    pathChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("path Chooser", pathChooser);
     SmartDashboard.putNumber("Voltage", RobotController.getBatteryVoltage());

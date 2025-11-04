@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -261,5 +262,10 @@ public class CoralSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());
     SmartDashboard.putBoolean("colorboolean", checkCoral());
     SmartDashboard.putBoolean("coral limit", noUp);
+    setCManual(cManual);
+    if (!cManual && DriverStation.isTeleop()) {
+      setSetpoint();
+      angleToPoint();
+    }
   }
 }
