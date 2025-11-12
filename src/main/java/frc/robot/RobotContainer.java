@@ -52,7 +52,6 @@ import frc.robot.Autos.Level3;
 import frc.robot.Autos.TestAuto;
 //import frc.robot.Commands.AlgaeDriver;
 //import frc.robot.Commands.ElevatorDrive;
-import frc.robot.Commands.LimelightAlign;
 import frc.robot.Commands.LimeLightCommands.LimeLightTest;
 import frc.robot.Commands.MoveCommands.MoveEL2;
 import frc.robot.Commands.MoveCommands.MoveL2;
@@ -233,7 +232,6 @@ public class RobotContainer {
   public final Command testSwerve = new TestAuto(drivetrain, drive);
 
   /********Commands not included with Swerve Builder******/
-  public final Command limelightAlign = new LimelightAlign(limelight, drivetrain, drive);
   
   private LimeLightTest lime = new LimeLightTest(drivetrain);
 
