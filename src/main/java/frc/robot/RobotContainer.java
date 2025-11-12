@@ -53,8 +53,10 @@ import frc.robot.Autos.TestAuto;
 //import frc.robot.Commands.AlgaeDriver;
 //import frc.robot.Commands.ElevatorDrive;
 import frc.robot.Commands.LimelightAlign;
+import frc.robot.Commands.LimeLightCommands.LimeLightTest;
 import frc.robot.Commands.MoveCommands.MoveEL2;
 import frc.robot.Commands.MoveCommands.MoveL2;
+
 
 public class RobotContainer {
 
@@ -78,6 +80,8 @@ public class RobotContainer {
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   //private final LightsSubsystem lightsSubsystem = new LightsSubsystem();
 
+
+  
   /********speed limit variables****/
   double driveSpeed = .6;
   double turtleSpeed = .4;
@@ -96,6 +100,7 @@ public class RobotContainer {
 
   DigitalInput noUp = new DigitalInput(1);
   Trigger NoUp = new Trigger(noUp::get);
+
 
 
   Trigger manipCoralIn = new JoystickButton(manip, 3);
@@ -230,6 +235,7 @@ public class RobotContainer {
   /********Commands not included with Swerve Builder******/
   public final Command limelightAlign = new LimelightAlign(limelight, drivetrain, drive);
   
+  private LimeLightTest lime = new LimeLightTest(drivetrain);
 
 
   private void configureBindings() {
@@ -259,6 +265,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.x().onTrue(lime);
 
     //joystick.button(3).whileTrue(limelightAlign);
 

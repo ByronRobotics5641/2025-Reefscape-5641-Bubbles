@@ -195,4 +195,9 @@ public class CommandSwerveDrivetrain extends LegacySwerveDrivetrain implements S
     ) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
+    public void drive(double driveSpeed, int i, double turnCmd, boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'drive'");
+    }
+
 }
