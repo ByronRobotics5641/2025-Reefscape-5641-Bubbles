@@ -24,12 +24,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   boolean isManual = false;//start without PID... change in Elevator PID commands, call setIsManual(false)
 
-  final double kP = .25;
+  final double kP = .11;
   final double kI = 0;
   final double iLimit = 1;
-  final double kD = 0.2;
+  final double kD = 1;
 
-  final double speedMult = 1.3;
+  final double speedMult = .1;
 
   double setpoint = 0;
   double stopPoint = 0;
@@ -77,19 +77,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (isManual)
     {
       //System.out.println("isManual");
-      if(!noDown && speed > 0) 
+      /*if(!noDown && speed > 0) 
       {
         lead.set(0);
         follow.set(0);
-      }
-      else if(speed < 0 && encoder.getPosition() <= -354) 
+      }*/
+       if(speed < 0 && encoder.getPosition() <= -354) 
       {
         lead.set(0);
         follow.set(0);
       }
       else
       {
-        lead.set(speed * .55);
+        lead.set(speed * -.55);
         follow.set(-speed * .55);
       }
     }
@@ -108,14 +108,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public void eleLift() 
   {
-    lead.set(.2);
-    follow.set(-.2);
+    lead.set(-.2);
+    follow.set(.2);
   }
 
   public void eleDown() 
   {
-    lead.set(-.2);
-    follow.set( .2);
+    lead.set(.2);
+    follow.set( -.2);
   }
 
 
@@ -257,15 +257,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
 
-    if(outPutSpeed > 0 && !noDown) {
+    /*if(outPutSpeed > 0 && !noDown) {
       lead.set(0);
       follow.set(0);
       encoder.setPosition(0);
     }
-    else {
+    else {*/
       lead.set(outPutSpeed*speedMult);
-      follow.set(outPutSpeed*speedMult);
-    }
+      follow.set(-outPutSpeed*speedMult);
+    //}
 
   }
 

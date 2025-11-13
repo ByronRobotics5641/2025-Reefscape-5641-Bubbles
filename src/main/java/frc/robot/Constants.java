@@ -11,7 +11,8 @@ public class Constants {
 
     /********** Elevator heights ********/
 
-    public static final double L1 = 0;
+    // 1in is -2.5tic
+    public static final double L1 = -10;
     public static final double L2 = 0;
     public static final double L3 = 0;
     public static final double L4 = 0;
