@@ -29,8 +29,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   final double iLimit = 1;
   final double kD = 1;
 
-  final double speedMult = .1;
-
   double setpoint = 0;
   double stopPoint = 0;
   double errorSum = 0;
@@ -263,8 +261,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       encoder.setPosition(0);
     }
     else {*/
-      lead.set(outPutSpeed*speedMult);
-      follow.set(-outPutSpeed*speedMult);
+      lead.set(outPutSpeed);
+      follow.set(-outPutSpeed);
     //}
 
   }
