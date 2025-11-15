@@ -24,10 +24,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   boolean isManual = false;//start without PID... change in Elevator PID commands, call setIsManual(false)
 
-  final double kP = .11;
+  final double kP = 0.05;
   final double kI = 0;
   final double iLimit = 1;
-  final double kD = 1;
+  final double kD = 0;
 
   double setpoint = 0;
   double stopPoint = 0;
@@ -261,8 +261,8 @@ public class ElevatorSubsystem extends SubsystemBase {
       encoder.setPosition(0);
     }
     else {*/
-      lead.set(outPutSpeed);
-      follow.set(-outPutSpeed);
+      lead.set(Math.min(outPutSpeed, 0.2));
+      follow.set(Math.min(-outPutSpeed, 0.2));
     //}
 
   }
