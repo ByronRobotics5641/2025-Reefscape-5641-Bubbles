@@ -21,17 +21,11 @@
           "data": {
             "waitTime": 0.2
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlgaeL2"
-          }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "Reefscape 2025",
   "choreoAuto": false
 }

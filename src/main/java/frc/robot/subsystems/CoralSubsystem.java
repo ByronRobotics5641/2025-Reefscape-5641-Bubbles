@@ -10,10 +10,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class CoralSubsystem extends SubsystemBase {
   /** Creates a new CoralSubsystem. */
@@ -196,27 +198,27 @@ public class CoralSubsystem extends SubsystemBase {
   
   public void setSetpoint(){
     if(count == 1) { //L1
-      this.setpoint = 80;
+      this.setpoint = Constants.CL1;
      // System.out.println("Coral L1");
     }
     else if(count == 2) { //L2
-      this.setpoint = 117;
+      this.setpoint = Constants.CL2;
     //  System.out.println("Coral L2");
     }
     else if(count == 3) { //L3
-      this.setpoint = 93;
+      this.setpoint = Constants.CL3;
       //System.out.println("Coral L3");
     }
     else if(count == 4) { //Coral Intake
-      this.setpoint = 61;
+      this.setpoint = Constants.C_CORAL_INTAKE;
      // System.out.println("Coral Coral Intake");
     }
     else if(count == 5) { //Algae L2
-      this.setpoint = 65;
+      this.setpoint = Constants.C_ALGAE_L2;
       //System.out.println("Coral Algae L2");
     }
     else if(count == 6) { //Algae L3
-      this.setpoint = 67;
+      this.setpoint = Constants.C_ALGAE_L3;
       //System.out.println("Coral Algae L3");
     }
     else {
@@ -260,5 +262,10 @@ public class CoralSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());
     SmartDashboard.putBoolean("colorboolean", checkCoral());
     SmartDashboard.putBoolean("coral limit", noUp);
+    setCManual(cManual);
+    if (!cManual && DriverStation.isTeleop()) {
+      setSetpoint();
+      angleToPoint();
+    }
   }
 }

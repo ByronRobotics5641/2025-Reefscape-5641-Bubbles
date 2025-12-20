@@ -10,9 +10,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
@@ -22,7 +24,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   boolean isManual = false;//start without PID... change in Elevator PID commands, call setIsManual(false)
 
-  final double kP = .25;
+  final double kP = .2;
   final double kI = 0;
   final double iLimit = 1;
   final double kD = 0.2;
@@ -190,27 +192,27 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //Elevator L1
     if(count == 1)
-      this.setpoint = 0;
+      this.setpoint = Constants.L1;
 
     //Elevator L2
     else if(count == 2) 
-      this.setpoint = -224;
+      this.setpoint = Constants.L2;
 
     //Elevator L3
     else if(count == 3)
-      this.setpoint = -349;
+      this.setpoint = Constants.L3;
 
     //Elevator Coral Intake
     else if(count == 4)
-      this.setpoint = -120;
+      this.setpoint = Constants.CORAL_INTAKE;
 
     //Elevator Algae L2
     else if(count == 5)
-      this.setpoint = -127;
+      this.setpoint = Constants.ELE_ALGAE_L2;
 
     //Elevator Algae L3
     else if(count == 6)
-      this.setpoint = -339;
+      this.setpoint = Constants.ELE_ALGAE_L3;
 
     //Elevator Resting
     else 
@@ -229,7 +231,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.getNumber("position", sensorPosition);
     
 
-    if (sensorPosition < -354 && kP > 0) { // Assuming kP is positive when going up
+    if (sensorPosition < -199.125 && kP > 0) { // Assuming kP is positive when going up
       lead.set(0);
       follow.set(0);
       return;  // Stop PID control if height limit is reached
@@ -251,6 +253,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if(outPutSpeed > 0 && !noDown) {
       lead.set(0);
       follow.set(0);
+      encoder.setPosition(0);
     }
     else {
       lead.set(outPutSpeed*speedMult);
@@ -265,7 +268,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
       SmartDashboard.putBoolean("Ele Limit", !noDown);
       SmartDashboard.putNumber("Elevator Encoder", encoder.getPosition());  
-      SmartDashboard.putBoolean("Manual", isManual);   
+      SmartDashboard.putBoolean("Manual", isManual);
+      setIsManual(isManual);
+      if (!isManual && DriverStation.isTeleop()){
+        setSetpoint(count);
+      }   
 
   }
 }
