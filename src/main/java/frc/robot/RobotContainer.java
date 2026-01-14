@@ -233,7 +233,7 @@ public class RobotContainer {
 
   /********Commands not included with Swerve Builder******/
   
-  private LimeLightTest lime = new LimeLightTest(drivetrain);
+  private LimeLightTest lime = new LimeLightTest(drivetrain, () -> joystick.getRawAxis(1), () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(4));
 
 
   private void configureBindings() {

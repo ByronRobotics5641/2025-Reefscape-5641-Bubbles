@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-// FRC3620
+
 
 package frc.robot.subsystems;
 
@@ -38,31 +38,29 @@ public class LimeLightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (enable) {
-      Double targetDistance = LimelightHelpers.getTargetPose3d_CameraSpace(ll).getTranslation().getDistance(new Translation3d());
-      Double confidence = 1 - ((targetDistance - 1) / 6);
-      LimelightHelpers.LimelightResults result =
-          LimelightHelpers.getLatestResults(ll);
-      if (result.valid) {
-        botpose = LimelightHelpers.getBotPose2d_wpiBlue(ll);
-        if (field.isPoseWithinArea(botpose)) {
-          if (drivetrain.getState().Pose.getTranslation().getDistance(botpose.getTranslation()) < 0.5
-              || trust
-              || result.targets_Fiducials.length > 1) {
-            //add vision data to **current pose. This should be w/in 1M of current pose
-            drivetrain.addVisionMeasurement(
-                botpose,
-                Timer.getFPGATimestamp()
-                    - (result.latency_capture / 1000.0)
-                    - (result.latency_pipeline / 1000.0),
-                VecBuilder.fill(confidence, confidence, .01));
-          } else {
-            distanceError++;
-            SmartDashboard.putNumber("Limelight Error", distanceError);
-          }
-        } else {
-          fieldError++;
-          SmartDashboard.putNumber("Field Error", fieldError);
-        }
+      // MegaTag2: Send robot orientation to Limelight
+      var pose = drivetrain.getState().Pose;
+      var speeds = drivetrain.getState().speeds;
+      
+      LimelightHelpers.SetRobotOrientation(ll, 
+          pose.getRotation().getDegrees(), 
+          edu.wpi.first.math.util.Units.radiansToDegrees(speeds.omegaRadiansPerSecond), 
+          0, 0, 0, 0);
+
+      // Use MegaTag2 Pose estimate for WPILib Blue alliance
+      LimelightHelpers.PoseEstimate result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ll);
+      
+      if (result != null && result.tagCount > 0) {
+          // Calculate individual confidence based on distance
+          double targetDistance = result.avgTagDist;
+          double confidence = 1 - ((targetDistance - 1) / 6);
+          confidence = Math.max(0.1, Math.min(1.0, confidence));
+
+          // Add vision measurement to drivetrain
+          drivetrain.addVisionMeasurement(
+              result.pose,
+              result.timestampSeconds,
+              VecBuilder.fill(confidence, confidence, .01));
       }
     }
   }

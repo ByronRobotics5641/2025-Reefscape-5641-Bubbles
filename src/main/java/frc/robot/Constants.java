@@ -6,7 +6,7 @@ package frc.robot;
 
 /*****Stores common values, non-mutable(can't be changed... at least not in runtime)*/
 public class Constants {
-    public static final double MaxSpeed = 3; //MPS
+    public static final double MaxSpeed = 4.5; // MPS (Theoretical Max 4.73)
     public static final double MaxAngularRate = .925 * Math.PI;// Radians/s   original 0.825
 
     /********** Elevator heights ********/
