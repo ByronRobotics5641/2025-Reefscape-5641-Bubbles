@@ -75,7 +75,7 @@ public class CoralSubsystem extends SubsystemBase {
 
  
   public void setCManual(boolean cManual) {
-    System.out.println("Setting isManual to: " + cManual);  // Debugging line
+   // System.out.println("Setting isManual to: " + cManual);  // Debugging line
     this.cManual = cManual;
   }
 
@@ -93,7 +93,7 @@ public class CoralSubsystem extends SubsystemBase {
     this.noUp = noUp;
     if (cManual)
     {
-      System.out.println("isManual");
+     // System.out.println("isManual");
       if(noUp && speed < 0) {
         rotate.set(speed * 0);
       }
@@ -256,7 +256,7 @@ public class CoralSubsystem extends SubsystemBase {
       angleToPoint();
     }*/
 
-    System.out.println("SF Count: "+ count);
+   // System.out.println("SF Count: "+ count);
 
     SmartDashboard.putNumber("Coral Encoder", encoder.getPosition() * kDriveTick2Degrees);
     SmartDashboard.putNumber("Color Sensor", colorSensor.getProximity());

@@ -15,11 +15,16 @@ public class LimeLightTest extends Command {
   /** Creates a new LimeLightTest. */
     private final CommandSwerveDrivetrain drivetrain;
     private final String limelightName = "limelight";
-    private final double targetDistanceMeters = 0.9144; // 3 feet
+    private final double targetDistanceMeters = 2; // 2 meters
+    //116 in, 9.6ft max vizability
 
     private final DoubleSupplier m_driverX;
     private final DoubleSupplier m_driverY;
     private final DoubleSupplier m_driverRot;
+
+    private double lastValidTx = 0;
+    private double lastValidDistance = 0;
+    private double lastValidTime = 0;
 
   public LimeLightTest(CommandSwerveDrivetrain drivetrain, DoubleSupplier driverX, DoubleSupplier driverY, DoubleSupplier driverRot) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -32,29 +37,47 @@ public class LimeLightTest extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+      lastValidTime = 0; // Reset on init
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     LimelightHelpers.PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    
+    double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    boolean hasTarget = false;
+    double currentDistance = 0;
+    double tx = 0;
 
-    // If no pose or no detected tags, do nothing and avoid crashes
-    if (pose == null || pose.tagCount == 0) {
-        drivetrain.drive(0, 0, 0, false);
-        return;
+    if (pose != null && pose.tagCount > 0) {
+        LimelightHelpers.RawFiducial closestTag = getClosestFiducial(pose);
+        if (closestTag != null) {
+            currentDistance = closestTag.distToRobot;
+            tx = closestTag.txnc;
+            lastValidDistance = currentDistance;
+            lastValidTx = tx;
+            lastValidTime = currentTime;
+            hasTarget = true;
+        }
     }
 
-    LimelightHelpers.RawFiducial closestTag = getClosestFiducial(pose);
-    if (closestTag == null) {
-        drivetrain.drive(0, 0, 0, false);
-        return;
+    // If no target found, check if we can use cached data
+    if (!hasTarget) {
+        if (currentTime - lastValidTime < 0.5 && lastValidTime != 0) {
+            // Use cached data
+            currentDistance = lastValidDistance;
+            tx = lastValidTx;
+            System.out.println("Using cached data. Age: " + (currentTime - lastValidTime));
+        } else {
+            // Too old, stop
+            drivetrain.drive(0, 0, 0, false);
+            return;
+        }
+    } else {
+        System.out.println("ID: " + (pose.rawFiducials.length > 0 ? pose.rawFiducials[0].id : "null") + " Dist: " + currentDistance + " TX: " + tx);
     }
-
-    double currentDistance = closestTag.distToRobot;
-    double tx = closestTag.txnc;
-
-    System.out.println("ID: " + closestTag.id + " Dist: " + currentDistance + " TX: " + tx);
 
     double forwardError = currentDistance - targetDistanceMeters;
 
@@ -82,7 +105,6 @@ public class LimeLightTest extends Command {
   }
   
 
-
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
@@ -93,16 +115,22 @@ public class LimeLightTest extends Command {
         return true;
     }
 
-    LimelightHelpers.PoseEstimate pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    double currentTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
     
-    // If we lose the tag, the robot "stops moving" in our logic, so we should give control back.
-    if (pose == null || pose.tagCount == 0) return true;
-
-    LimelightHelpers.RawFiducial closestTag = getClosestFiducial(pose);
-    if (closestTag == null) return true;
-
-    double currentDistance = closestTag.distToRobot;
-    double tx = closestTag.txnc;
+    // If we've lost the tag for too long, end
+    if (currentTime - lastValidTime > 0.5 && lastValidTime != 0) {
+        return true;
+    }
+    
+    // If we have never seen a tag, waiting for one... or should we end?
+    // Let's assume if we haven't seen one yet, we don't end immediately unless timeout? 
+    // Actually, if lastValidTime is 0 (never seen), maybe we shouldn't start driving?
+    // But isFinished is called after execute. 
+    // Let's keep it simple: if cached data is stale, we end. 
+    
+    // Logic for "finished" based on position (only if we have recent data)
+    double currentDistance = lastValidDistance;
+    double tx = lastValidTx;
 
     double forwardError = currentDistance - targetDistanceMeters;
 

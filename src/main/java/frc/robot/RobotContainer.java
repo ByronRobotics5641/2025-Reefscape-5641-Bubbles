@@ -50,6 +50,7 @@ import frc.robot.Autos.Level1;
 import frc.robot.Autos.Level2;
 import frc.robot.Autos.Level3;
 import frc.robot.Autos.TestAuto;
+import frc.robot.Commands.LimeLightCommands.LimeLightStare;
 //import frc.robot.Commands.AlgaeDriver;
 //import frc.robot.Commands.ElevatorDrive;
 import frc.robot.Commands.LimeLightCommands.LimeLightTest;
@@ -234,6 +235,7 @@ public class RobotContainer {
   /********Commands not included with Swerve Builder******/
   
   private LimeLightTest lime = new LimeLightTest(drivetrain, () -> joystick.getRawAxis(1), () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(4));
+  private LimeLightStare stare = new LimeLightStare(drivetrain, () -> joystick.getRawAxis(1), () -> joystick.getRawAxis(0), () -> joystick.getRawAxis(4));
 
 
   private void configureBindings() {
@@ -257,13 +259,14 @@ public class RobotContainer {
             .withVelocityY(0.8 *Math.pow((MathUtil.applyDeadband(-joystick.getRawAxis(0), 0.1) * Constants.MaxSpeed),2)* Math.signum(-joystick.getRawAxis(0)))  // Drive left with negative X (left)
             .withRotationalRate(0.8*Math.pow((MathUtil.applyDeadband(-joystick.getRawAxis(4), 0.1) * Constants.MaxAngularRate),2)* Math.signum(-joystick.getRawAxis(4))) // Drive counterclockwise with negative X (left)
         ));
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.y().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
     joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
     joystick.x().onTrue(lime);
+    joystick.a().whileTrue(stare);
 
     //joystick.button(3).whileTrue(limelightAlign);
 
@@ -275,7 +278,7 @@ public class RobotContainer {
 
     joystick.b().onTrue(m_zeroPID);
     joystick.b().onTrue(m_zeroCoral);
-//*/ 
+//*/
 
 
     /*****PS5*****/

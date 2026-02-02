@@ -12,9 +12,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Util.RectanglePoseArea;
+import frc.robot.subsystems.LimelightHelpers;
 
 public class LimeLightSubsystem extends SubsystemBase {
   CommandSwerveDrivetrain drivetrain;
@@ -25,6 +27,7 @@ public class LimeLightSubsystem extends SubsystemBase {
   private int fieldError = 0;
   private int distanceError = 0;
   private Pose2d botpose;
+  private final Field2d m_field = new Field2d();
   private static final RectanglePoseArea field =
         new RectanglePoseArea(new Translation2d(0.0, 0.0), new Translation2d(16.54, 8.02));
 
@@ -33,6 +36,7 @@ public class LimeLightSubsystem extends SubsystemBase {
     this.drivetrain = drivetrain;
     SmartDashboard.putNumber("Field Error", fieldError);
     SmartDashboard.putNumber("Limelight Error", distanceError);
+    SmartDashboard.putData("Limelight Field", m_field);
   }
 
   @Override
@@ -50,6 +54,10 @@ public class LimeLightSubsystem extends SubsystemBase {
       // Use MegaTag2 Pose estimate for WPILib Blue alliance
       LimelightHelpers.PoseEstimate result = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(ll);
       
+      if (result != null) {
+          m_field.setRobotPose(result.pose);
+      }
+
       if (result != null && result.tagCount > 0) {
           // Calculate individual confidence based on distance
           double targetDistance = result.avgTagDist;
