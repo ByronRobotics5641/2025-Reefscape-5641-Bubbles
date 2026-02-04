@@ -6,21 +6,25 @@ package frc.robot.Commands.MoveCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveL1 extends Command {
   /** Creates a new MoveL1. */
   CoralSubsystem coral;
+  ElevatorSubsystem ele;
 
-  public MoveL1(CoralSubsystem coral) {
+  public MoveL1(CoralSubsystem coral, ElevatorSubsystem ele) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.coral = coral;
+    this.ele = ele;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     coral.manip1();
+    ele.Emanip1();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
