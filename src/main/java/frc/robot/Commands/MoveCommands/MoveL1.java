@@ -14,10 +14,9 @@ public class MoveL1 extends Command {
   CoralSubsystem coral;
   ElevatorSubsystem ele;
 
-  public MoveL1(CoralSubsystem coral, ElevatorSubsystem ele) {
+  public MoveL1(CoralSubsystem coral) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.coral = coral;
-    this.ele = ele;
   }
 
   // Called when the command is initially scheduled.
